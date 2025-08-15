@@ -26,6 +26,9 @@
     --color-custom-accent: #20b486;
     --color-custom-accent-light: #4dc9a0;
     --color-custom-accent-dark: #1a8f6d;
+
+    /* Muted Colors */
+    --color-muted-text: #737373;
 }
 
 @custom-variant dark (&:is(.dark *));

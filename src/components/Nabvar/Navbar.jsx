@@ -7,7 +7,7 @@ const Navbar = () => {
     return (
         <div className="px-5 h-16 flex items-center justify-between">
             <div>
-                <h1 className="text-xl font-semibold">
+                <h1 className="text-2xl font-semibold">
                     <span>ডিপ্লোমা </span>
                     <span className="text-custom-primary font-extrabold">
                         ৩৬০
