@@ -1,6 +1,7 @@
-import { Ghost } from "lucide-react";
 import { Button } from "../ui/button";
 import NavLinks from "./NavLinks";
+import NavbarToggleBtn from "./NavbarToggleBtn";
+import { StoreProvider } from "@/redux/StoreProvider";
 
 const Navbar = () => {
     return (
@@ -14,9 +15,7 @@ const Navbar = () => {
                 </h1>
             </div>
             <div className="flex items-center gap-4">
-                <ul className="flex gap-2">
-                    <NavLinks />
-                </ul>
+                <NavLinks />
                 <div className="flex gap-1">
                     <Button size="sm">লগ ইন</Button>
                     <Button
@@ -25,6 +24,9 @@ const Navbar = () => {
                     >
                         সাইন ইন
                     </Button>
+                </div>
+                <div>
+                    <NavbarToggleBtn />
                 </div>
             </div>
         </div>
