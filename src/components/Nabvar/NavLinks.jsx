@@ -12,13 +12,12 @@ const NavLinks = () => {
         { id: 3, title: "আমার ইভেন্টস", path: "/my-bookings" },
     ];
     return (
-        <ul className="flex gap-2">
+        <>
             {links.map((link) => (
                 <li key={link.id} className="">
                     <Link
-                        className={`px-1 ${
-                            pathname === link.path &&
-                            "border-b border-yellow-500 font-semibold text-yellow-500"
+                        className={`px-2 py-1 rounded hover:bg-custom-neutral transition duration-200 ${
+                            pathname === link.path && "bg-custom-neutral"
                         }`}
                         href={link.path}
                     >
@@ -26,7 +25,7 @@ const NavLinks = () => {
                     </Link>
                 </li>
             ))}
-        </ul>
+        </>
     );
 };
 

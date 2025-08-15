@@ -1,6 +1,33 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme {
+    /* Primary Colors */
+    --color-custom-primary: #ffcd33;
+    --color-custom-primary-light: #ffe680;
+    --color-custom-primary-dark: #e6b400;
+
+    /* Secondary Colors */
+    --color-custom-secondary: #00ffb2;
+    --color-custom-secondary-light: #66ffd1;
+    --color-custom-secondary-dark: #00cc8e;
+
+    /* Neutral Colors */
+    --color-custom-neutral: #eaecf0;
+    --color-custom-neutral-light: #f5f6f8;
+    --color-custom-neutral-dark: #cdd1d8;
+
+    /* Soft Colors */
+    --color-custom-soft: #fffbee;
+    --color-custom-soft-light: #fffdf6;
+    --color-custom-soft-dark: #f7f2d8;
+
+    /* Accent Colors */
+    --color-custom-accent: #20b486;
+    --color-custom-accent-light: #4dc9a0;
+    --color-custom-accent-dark: #1a8f6d;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

@@ -8,19 +8,23 @@ const Navbar = () => {
             <div>
                 <h1 className="text-xl font-semibold">
                     <span>ডিপ্লোমা </span>
-                    <span>৩৬০</span>
+                    <span className="text-custom-primary font-extrabold">
+                        ৩৬০
+                    </span>
                 </h1>
             </div>
             <div className="flex items-center gap-4">
-                <NavLinks />
+                <ul className="flex gap-2">
+                    <NavLinks />
+                </ul>
                 <div className="flex gap-1">
+                    <Button size="sm">লগ ইন</Button>
                     <Button
                         size="sm"
                         className="bg-transparent hover:bg-transparent text-black border-2 border-black px-2 py-1 text-sm "
                     >
-                        লগ ইন
+                        সাইন ইন
                     </Button>
-                    <Button size="sm">সাইন ইন</Button>
                 </div>
             </div>
         </div>
