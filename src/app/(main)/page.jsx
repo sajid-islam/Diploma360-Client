@@ -6,7 +6,6 @@ const HomePage = () => {
     return (
         <main className="max-w-7xl mx-auto px-5">
             <Banner />
-            <EventCard />
         </main>
     );
 };
