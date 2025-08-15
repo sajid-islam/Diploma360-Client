@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "../ui/button";
 import NavLinks from "./NavLinks";
 import NavbarToggleBtn from "./NavbarToggleBtn";
@@ -17,12 +18,15 @@ const Navbar = () => {
             <div className="flex items-center gap-4">
                 <NavLinks />
                 <div className="flex items-center gap-1">
-                    <Button size="sm">লগ ইন</Button>
+                    <Button size="sm">
+                        {" "}
+                        <Link href="sign-in">লগ ইন</Link>
+                    </Button>
                     <Button
                         size="sm"
                         className="bg-transparent hover:bg-transparent text-black border-2 border-black px-2 py-1 text-sm hidden md:block "
                     >
-                        সাইন ইন
+                        <Link href="/sign-up">সাইন আপ</Link>
                     </Button>
                 </div>
                 <div>

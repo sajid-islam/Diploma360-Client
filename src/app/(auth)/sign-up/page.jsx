@@ -10,10 +10,13 @@ import useAuth from "@/hooks/useAuth";
 import { updateProfile } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
+import axios from "axios";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
 
 export default function SignUpPage() {
     useAuthRedirect();
 
+    const AxiosPublic = useAxiosPublic();
     const { createUser, loading } = useAuth();
     const router = useRouter();
 
@@ -28,6 +31,17 @@ export default function SignUpPage() {
                 displayName: name,
                 photoURL: `https://api.dicebear.com/9.x/glass/svg?seed=${result.user.uid}`,
             });
+
+            const userData = {
+                name: result.user.displayName,
+                photoURL: result.user.photoURL,
+                email: result.user.email,
+                uid: result.user.uid,
+            };
+
+            const response = await AxiosPublic.post("/api/user", userData);
+            const data = response.data;
+            console.log(data);
 
             e.target.reset();
             router.replace("/");
