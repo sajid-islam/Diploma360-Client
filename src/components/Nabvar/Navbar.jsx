@@ -16,11 +16,11 @@ const Navbar = () => {
             </div>
             <div className="flex items-center gap-4">
                 <NavLinks />
-                <div className="flex gap-1">
+                <div className="flex items-center gap-1">
                     <Button size="sm">লগ ইন</Button>
                     <Button
                         size="sm"
-                        className="bg-transparent hover:bg-transparent text-black border-2 border-black px-2 py-1 text-sm "
+                        className="bg-transparent hover:bg-transparent text-black border-2 border-black px-2 py-1 text-sm hidden md:block "
                     >
                         সাইন ইন
                     </Button>

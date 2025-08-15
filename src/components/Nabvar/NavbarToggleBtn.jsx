@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 const NavbarToggleBtn = () => {
     const dispatch = useDispatch();
     return (
-        <button onClick={() => dispatch(toggleNavbar())}>
+        <button className="md:hidden" onClick={() => dispatch(toggleNavbar())}>
             <CiMenuFries size={20} />
         </button>
     );
