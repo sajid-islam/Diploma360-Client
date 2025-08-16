@@ -7,11 +7,16 @@ import Link from "next/link";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import GoogleAuthBtn from "@/components/GoogleAuthBtn";
 import useAuth from "@/hooks/useAuth";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignInPage() {
     useAuthRedirect();
 
     const { login, authLoading } = useAuth();
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const redirect = searchParams.get("redirect") || "/";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,6 +25,7 @@ export default function SignInPage() {
 
         await login(email, password);
         e.target.reset();
+        router.push(redirect);
     };
 
     return (
@@ -61,7 +67,7 @@ export default function SignInPage() {
                 <p className="mt-4 text-sm text-gray-600 text-center">
                     একাউন্ট নেই?{" "}
                     <Link
-                        href="/sign-up"
+                        href={`/sign-up?redirect=${redirect}`}
                         className="text-custom-primary font-semibold"
                     >
                         সাইন আপ করুন

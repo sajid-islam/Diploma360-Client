@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import { updateProfile } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
 import GoogleAuthBtn from "@/components/GoogleAuthBtn";
@@ -17,6 +17,8 @@ export default function SignUpPage() {
     const AxiosPublic = useAxiosPublic();
     const { createUser, loading, authLoading } = useAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get("redirect") || "/";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,8 +43,8 @@ export default function SignUpPage() {
             const data = response.data;
             console.log(data);
 
+            router.push(redirect);
             e.target.reset();
-            router.replace("/");
         } catch (error) {
             console.error("SignUP Error", error);
         }

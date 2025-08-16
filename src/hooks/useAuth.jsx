@@ -34,11 +34,12 @@ const useAuth = () => {
     const signInWithGoogle = async () => {
         setAuthLoading(true);
 
-        const signInWithGoogle = await signInWithPopup(auth, googleProvider);
+        const result = await signInWithPopup(auth, googleProvider);
+        const email = result.user.email;
         await AxiosPublic.post("/api/user/jwt", { email });
         setAuthLoading(false);
 
-        return signInWithGoogle;
+        return result;
     };
 
     const logout = async () => {
