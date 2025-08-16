@@ -6,9 +6,12 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import useAuth from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function EventDetailsPage() {
-    const { id } = useParams(); // event ID from route
+    const { id } = useParams();
+    const { user } = useAuth();
     const [event, setEvent] = useState(null);
     const AxiosPublic = useAxiosPublic();
     const [open, setOpen] = useState(false);
@@ -57,12 +60,22 @@ export default function EventDetailsPage() {
                     <p className="text-lg font-semibold text-gray-800">
                         মূল্য: <span className="text-orange-600">200 টাকা</span>
                     </p>
-                    <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogTrigger asChild>
+                    {!user ? (
+                        <Link href={`/sign-in?redirect=/events/${id}`}>
+                            {" "}
                             <Button className="mt-2">টিকিট কিনুন</Button>
-                        </DialogTrigger>
-                        <RegistrationModal event={event} setOpen={setOpen} />
-                    </Dialog>
+                        </Link>
+                    ) : (
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="mt-2">টিকিট কিনুন</Button>
+                            </DialogTrigger>
+                            <RegistrationModal
+                                event={event}
+                                setOpen={setOpen}
+                            />
+                        </Dialog>
+                    )}
                 </div>
             </div>
 
