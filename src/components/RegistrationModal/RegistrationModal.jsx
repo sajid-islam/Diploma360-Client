@@ -5,41 +5,84 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import useAuth from "@/hooks/useAuth";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { useState } from "react";
 
-const RegistrationModal = ({ event }) => {
+const RegistrationModal = ({ event, setOpen }) => {
     const { user } = useAuth();
-    const handleSubmit = (e) => {};
+    const AxiosPrivate = useAxiosPrivate();
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const form = e.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const phone = form.phone.value;
+        const numberOfSeats = form.tickets.value;
+        const paymentMethod = form.payment.value || "unknown";
+
+        try {
+            const registrationData = {
+                name,
+                email,
+                phone,
+                numberOfSeats,
+                paymentMethod,
+            };
+
+            const response = await AxiosPrivate.post(
+                `/api/events/${event._id}/registration`,
+                registrationData
+            );
+            const data = await response.data;
+            console.log(data);
+
+            setLoading(false);
+            setOpen(false);
+            form.reset();
+        } catch (error) {
+            setLoading(false);
+            console.log("Error on registration modal", error);
+        }
+    };
     return (
         <DialogContent className="sm:max-w-lg">
             <DialogHeader>
-                <DialogTitle>Register for {event.eventName}</DialogTitle>
+                <DialogTitle className="mt-4">
+                    <span className="text-custom-secondary-dark">
+                        {event.eventName}
+                    </span>{" "}
+                    জন্য রেজিস্ট্রেশন করুন
+                </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                 <div>
-                    <label className="block text-sm font-medium">Name</label>
+                    <label className="block text-sm font-medium">নাম</label>
                     <input
                         type="text"
                         name="name"
                         className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
                         readOnly
                         required
-                        value={user?.displayName}
+                        value={user?.displayName || ""}
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium">Email</label>
+                    <label className="block text-sm font-medium">ইমেইল</label>
                     <input
                         type="email"
                         name="email"
                         className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
                         readOnly
                         required
-                        value={user?.email}
+                        value={user?.email || ""}
                     />
                 </div>
                 <div>
                     <label className="block text-sm font-medium">
-                        Phone Number
+                        ফোন নাম্বার
                     </label>
                     <input
                         type="text"
@@ -50,7 +93,7 @@ const RegistrationModal = ({ event }) => {
                 </div>
                 <div>
                     <label className="block text-sm font-medium">
-                        Number of Tickets
+                        মোট টিকিট
                     </label>
                     <input
                         type="number"
@@ -62,7 +105,7 @@ const RegistrationModal = ({ event }) => {
                 </div>
                 <div>
                     <label className="block text-sm font-medium">
-                        Payment Method (optional)
+                        পেমেন্ট মেথড (অফশনাল)
                     </label>
                     <input
                         type="text"
@@ -70,8 +113,12 @@ const RegistrationModal = ({ event }) => {
                         className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
                     />
                 </div>
-                <Button type="submit" className="w-full ">
-                    Submit Registration
+                <Button
+                    disabled={loading}
+                    type="submit"
+                    className="w-full bg-custom-secondary hover:bg-custom-secondary/90"
+                >
+                    {loading ? "সাবমিট হচ্ছে" : "সাবমিট রেজিস্ট্রেশন"}
                 </Button>
             </form>
         </DialogContent>

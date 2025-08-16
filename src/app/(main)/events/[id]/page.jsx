@@ -11,6 +11,7 @@ export default function EventDetailsPage() {
     const { id } = useParams(); // event ID from route
     const [event, setEvent] = useState(null);
     const AxiosPublic = useAxiosPublic();
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -56,11 +57,11 @@ export default function EventDetailsPage() {
                     <p className="text-lg font-semibold text-gray-800">
                         From <span className="text-orange-600">200 TK</span>
                     </p>
-                    <Dialog>
+                    <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
                             <Button className="mt-2">Buy Tickets</Button>
                         </DialogTrigger>
-                        <RegistrationModal event={event} />
+                        <RegistrationModal event={event} setOpen={setOpen} />
                     </Dialog>
                 </div>
             </div>
