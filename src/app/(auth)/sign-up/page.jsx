@@ -62,6 +62,7 @@ export default function SignUpPage() {
                             type="text"
                             placeholder="আপনার নাম লিখুন"
                             className="mt-1"
+                            required
                         />
                     </div>
                     <div>
@@ -71,6 +72,7 @@ export default function SignUpPage() {
                             type="email"
                             placeholder="আপনার ইমেইল লিখুন"
                             className="mt-1"
+                            required
                         />
                     </div>
                     <div>
@@ -80,6 +82,7 @@ export default function SignUpPage() {
                             type="password"
                             placeholder="আপনার পাসওয়ার্ড লিখুন"
                             className="mt-1"
+                            required
                         />
                     </div>
                     <Button

@@ -1,6 +1,8 @@
 "use client";
 
 import { FaUser, FaSignOutAlt, FaTachometerAlt } from "react-icons/fa";
+import { IoMdAddCircle } from "react-icons/io";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
@@ -45,10 +47,10 @@ export default function UserButton() {
                         <FaUser className="mr-2" /> প্রোফাইল
                     </button>
                     <button
-                        onClick={() => router.push("/dashboard")}
+                        onClick={() => router.push("/add-event")}
                         className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100"
                     >
-                        <FaTachometerAlt className="mr-2" /> ড্যাশবোর্ড
+                        <IoMdAddCircle className="mr-2" /> অ্যাড ইভেন্ট
                     </button>
                     <button
                         onClick={handleLogout}
