@@ -1,8 +1,11 @@
 "use client";
 
+import RegistrationModal from "@/components/RegistrationModal/RegistrationModal";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export default function EventDetailsPage() {
     const { id } = useParams(); // event ID from route
@@ -53,9 +56,12 @@ export default function EventDetailsPage() {
                     <p className="text-lg font-semibold text-gray-800">
                         From <span className="text-orange-600">200 TK</span>
                     </p>
-                    <button className="mt-2 px-6 py-2 bg-orange-600 text-white rounded-lg shadow hover:bg-orange-700 transition">
-                        Buy Tickets
-                    </button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button className="mt-2">Buy Tickets</Button>
+                        </DialogTrigger>
+                        <RegistrationModal event={event} />
+                    </Dialog>
                 </div>
             </div>
 

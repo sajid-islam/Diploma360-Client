@@ -13,10 +13,13 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { useRouter } from "next/navigation";
 
 export default function AddEventPage() {
     const [preview, setPreview] = useState(null);
     const AxiosPrivate = useAxiosPrivate();
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     // Convert image to Base64
     const getBase64 = (file) => {
@@ -48,8 +51,11 @@ export default function AddEventPage() {
             eventLink: form.link.value,
         };
         console.log(eventData);
-        const response = await AxiosPrivate.post("/api/event", eventData);
-        const data = response.data;
+        setLoading(true);
+        const response = await AxiosPrivate.post("/api/events", eventData);
+        const data = await response.data;
+        setLoading(false);
+        router.push("/events");
 
         console.log("res Data:", data);
     };
@@ -105,8 +111,8 @@ export default function AddEventPage() {
 
                     {/* Link */}
                     <div className="flex flex-col space-y-2">
-                        <Label htmlFor="link">Event Link</Label>
-                        <Input id="link" name="link" type="url" required />
+                        <Label htmlFor="link">Event Link (optional)</Label>
+                        <Input id="link" name="link" type="url" />
                     </div>
                 </div>
 
@@ -142,8 +148,8 @@ export default function AddEventPage() {
                 </div>
 
                 {/* Submit */}
-                <Button type="submit" className="w-full">
-                    Submit Event
+                <Button disabled={loading} type="submit" className="w-full">
+                    {loading ? "সাবমিট হচ্ছে" : "সাবমিট"}
                 </Button>
             </form>
         </div>

@@ -9,12 +9,14 @@ import useAuthRedirect from "@/hooks/useAuthRedirect";
 import GoogleAuthBtn from "@/components/GoogleAuthBtn";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
 
 export default function SignInPage() {
     useAuthRedirect();
 
+    const AxiosPublic = useAxiosPublic();
+
     const { login } = useAuth();
-    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,8 +24,8 @@ export default function SignInPage() {
         const password = e.target.elements.password.value;
 
         await login(email, password);
+        await AxiosPublic.post("/api/user/jwt", { email });
         e.target.reset();
-        router.replace("/");
     };
 
     return (

@@ -12,7 +12,7 @@ import Link from "next/link";
 
 export default function EventCard({ event }) {
     return (
-        <Card className="w-[350px] rounded-xl overflow-hidden shadow-lg">
+        <Card className="rounded-xl overflow-hidden shadow-lg">
             {/* Image Section */}
             <div className="relative">
                 <img
@@ -64,8 +64,10 @@ export default function EventCard({ event }) {
 
             {/* Footer Buttons */}
             <CardFooter>
-                <Link href={`/events/${event._id}`}>
-                    <Button variant="secondary">View Details</Button>
+                <Link href={`/events/${event._id}`} className="w-full">
+                    <Button variant="secondary" className="w-full">
+                        View Details
+                    </Button>
                 </Link>
             </CardFooter>
         </Card>
