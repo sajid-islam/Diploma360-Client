@@ -3,11 +3,15 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
 } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const useAuth = () => {
     const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
 
     const [user, loading] = useAuthState(auth);
 
@@ -19,7 +23,15 @@ const useAuth = () => {
         return signInWithEmailAndPassword(auth, email, password);
     };
 
-    return { createUser, login, loading, user };
+    const signInWithGoogle = () => {
+        return signInWithPopup(auth, googleProvider);
+    };
+
+    const logout = () => {
+        return signOut(auth);
+    };
+
+    return { createUser, login, loading, user, signInWithGoogle, logout };
 };
 
 export default useAuth;

@@ -1,17 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
 import useAuth from "@/hooks/useAuth";
 import { updateProfile } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
-import axios from "axios";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
+import GoogleAuthBtn from "@/components/GoogleAuthBtn";
 
 export default function SignUpPage() {
     useAuthRedirect();
@@ -48,11 +46,6 @@ export default function SignUpPage() {
         } catch (error) {
             console.error("SignUP Error", error);
         }
-    };
-
-    const handleGoogleLogin = () => {
-        // TODO: Add Google login functionality
-        console.log("Google login clicked");
     };
 
     return (
@@ -98,14 +91,7 @@ export default function SignUpPage() {
                     </Button>
                 </form>
 
-                <Button
-                    variant="secondary"
-                    onClick={handleGoogleLogin}
-                    className="w-full mt-4"
-                >
-                    <FcGoogle size={20} />
-                    Google দিয়ে সাইন আপ করুন
-                </Button>
+                <GoogleAuthBtn />
 
                 <p className="mt-4 text-sm text-gray-600 text-center">
                     ইতিমধ্যেই একাউন্ট আছে?{" "}
