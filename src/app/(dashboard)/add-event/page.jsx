@@ -12,9 +12,11 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 export default function AddEventPage() {
     const [preview, setPreview] = useState(null);
+    const AxiosPrivate = useAxiosPrivate();
 
     // Convert image to Base64
     const getBase64 = (file) => {
@@ -36,17 +38,20 @@ export default function AddEventPage() {
         }
 
         const eventData = {
-            name: form.eventName.value,
+            eventName: form.eventName.value,
             date: form.date.value,
             location: form.location.value,
             category: form.category.value,
             description: form.description.value,
-            seats: form.seats.value,
+            numberOfSeats: form.seats.value,
             image: imageBase64, // base64 string
+            eventLink: form.link.value,
         };
+        console.log(eventData);
+        const response = await AxiosPrivate.post("/api/event", eventData);
+        const data = response.data;
 
-        console.log("Event Data:", eventData);
-        alert("Event submitted! Check console for data.");
+        console.log("res Data:", data);
     };
 
     const handleImageChange = async (e) => {
