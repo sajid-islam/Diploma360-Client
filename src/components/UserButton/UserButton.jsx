@@ -6,14 +6,19 @@ import { IoMdAddCircle } from "react-icons/io";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
 
 export default function UserButton() {
     const [open, setOpen] = useState(false);
     const { user, logout } = useAuth();
     const router = useRouter();
+    const AxiosPublic = useAxiosPublic();
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        await logout();
+        const response = await AxiosPublic.delete("/api/user/logout");
+        const data = response.data;
+        console.log(data);
     };
 
     return (
