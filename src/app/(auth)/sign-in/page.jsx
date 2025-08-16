@@ -6,17 +6,24 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
+import GoogleAuthBtn from "@/components/GoogleAuthBtn";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/router";
 
 export default function SignInPage() {
     useAuthRedirect();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Empty submit handler for now
-    };
+    const { login } = useAuth();
+    const router = useRouter();
 
-    const handleGoogleLogin = () => {
-        // TODO: Add Google login functionality
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const email = e.target.elements.email.value;
+        const password = e.target.elements.password.value;
+
+        await login(email, password);
+        e.target.reset();
+        router.replace("/");
     };
 
     return (
@@ -49,14 +56,7 @@ export default function SignInPage() {
                     </Button>
                 </form>
 
-                <Button
-                    variant="secondary"
-                    onClick={handleGoogleLogin}
-                    className="w-full mt-4"
-                >
-                    <FcGoogle size={20} />
-                    Google দিয়ে লগইন করুন
-                </Button>
+                <GoogleAuthBtn />
 
                 <p className="mt-4 text-sm text-gray-600 text-center">
                     একাউন্ট নেই?{" "}
