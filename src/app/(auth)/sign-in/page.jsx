@@ -4,19 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import GoogleAuthBtn from "@/components/GoogleAuthBtn";
 import useAuth from "@/hooks/useAuth";
-import { useRouter } from "next/router";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
 
 export default function SignInPage() {
     useAuthRedirect();
 
-    const AxiosPublic = useAxiosPublic();
-
-    const { login } = useAuth();
+    const { login, authLoading } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,7 +19,6 @@ export default function SignInPage() {
         const password = e.target.elements.password.value;
 
         await login(email, password);
-        await AxiosPublic.post("/api/user/jwt", { email });
         e.target.reset();
     };
 
@@ -53,8 +47,12 @@ export default function SignInPage() {
                             className="mt-1"
                         />
                     </div>
-                    <Button type="submit" className="w-full mt-6 ">
-                        লগ ইন
+                    <Button
+                        disabled={authLoading}
+                        type="submit"
+                        className="w-full mt-6 "
+                    >
+                        {authLoading ? "লগ ইন হচ্ছে" : "লগ ইন"}
                     </Button>
                 </form>
 

@@ -25,7 +25,7 @@ export default function EventDetailsPage() {
     if (!event) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <p className="text-lg">Loading event details...</p>
+                <p className="text-lg">ইভেন্টের তথ্য লোড হচ্ছে...</p>
             </div>
         );
     }
@@ -50,16 +50,16 @@ export default function EventDetailsPage() {
                         {event.name}
                     </h1>
                     <p className="text-gray-600 mt-2">
-                        By {event.organizer || "CITY POLYTECHNIC INSTITUTE"}
+                        আয়োজক {event.organizer || "সিটি পলিটেকনিক ইনস্টিটিউট"}
                     </p>
                 </div>
                 <div className="text-right">
                     <p className="text-lg font-semibold text-gray-800">
-                        From <span className="text-orange-600">200 TK</span>
+                        মূল্য: <span className="text-orange-600">200 টাকা</span>
                     </p>
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
-                            <Button className="mt-2">Buy Tickets</Button>
+                            <Button className="mt-2">টিকিট কিনুন</Button>
                         </DialogTrigger>
                         <RegistrationModal event={event} setOpen={setOpen} />
                     </Dialog>
@@ -70,33 +70,33 @@ export default function EventDetailsPage() {
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm sm:text-base bg-gray-50 p-6 rounded-xl shadow">
                 <div>
                     <p>
-                        <span className="font-semibold">📅 Date:</span>{" "}
+                        <span className="font-semibold">📅 তারিখ:</span>{" "}
                         {new Date(event.date).toLocaleDateString()}
                     </p>
                     <p>
-                        <span className="font-semibold">📍 Location:</span>{" "}
-                        {event.location || "Online"}
+                        <span className="font-semibold">📍 স্থান:</span>{" "}
+                        {event.location}
                     </p>
                 </div>
                 <div>
                     <p>
-                        <span className="font-semibold">📂 Category:</span>{" "}
+                        <span className="font-semibold">📂 ক্যাটেগরি:</span>{" "}
                         {event.category}
                     </p>
                     <p>
-                        <span className="font-semibold">🎟 Total Seats:</span>{" "}
+                        <span className="font-semibold">🎟 মোট সিটস :</span>{" "}
                         {event.numberOfSeats}
                     </p>
                 </div>
                 <div>
                     <p>
                         <span className="font-semibold">
-                            💰 Registration Fee:
+                            💰 রেজিস্ট্রেশন ফি:
                         </span>{" "}
                         200TK
                     </p>
                     <p>
-                        <span className="font-semibold">⏳ Deadline:</span>{" "}
+                        <span className="font-semibold">⏳ শেষ তারিখ:</span>{" "}
                         {event.deadline
                             ? new Date(event.deadline).toLocaleDateString()
                             : "Not specified"}
@@ -106,7 +106,7 @@ export default function EventDetailsPage() {
 
             {/* Event Description */}
             <div className="mt-10">
-                <h2 className="text-2xl font-semibold mb-3">About the Event</h2>
+                <h2 className="text-2xl font-semibold mb-3">ইভেন্ট সম্পর্কে</h2>
                 <p className="text-gray-700 leading-relaxed">
                     {event.description}
                 </p>
@@ -115,14 +115,16 @@ export default function EventDetailsPage() {
             {/* Online Event Link */}
             {event.eventLink && (
                 <div className="mt-8">
-                    <h2 className="text-2xl font-semibold mb-2">Join Online</h2>
+                    <h2 className="text-2xl font-semibold mb-2">
+                        অনলাইনে যোগদান করুন
+                    </h2>
                     <a
                         href={event.eventLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline"
                     >
-                        Click here to join event
+                        ইভেন্টে যোগ দিতে এখানে ক্লিক করুন
                     </a>
                 </div>
             )}

@@ -1,6 +1,6 @@
 import { Hind_Siliguri, Poppins } from "next/font/google";
 import "./globals.css";
-import { Provider } from "react-redux";
+import { Toaster } from "sonner";
 import StoreProvider from "@/redux/StoreProvider";
 
 const hindSiliguri = Hind_Siliguri({
@@ -30,6 +30,7 @@ export default function RootLayout({ children }) {
                 className={`${hindSiliguri.variable} ${poppins.variable} antialiased`}
             >
                 <StoreProvider>{children}</StoreProvider>
+                <Toaster />
             </body>
         </html>
     );

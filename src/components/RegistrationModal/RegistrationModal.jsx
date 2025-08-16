@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const RegistrationModal = ({ event, setOpen }) => {
     const { user } = useAuth();
@@ -32,19 +33,25 @@ const RegistrationModal = ({ event, setOpen }) => {
                 paymentMethod,
             };
 
-            const response = await AxiosPrivate.post(
+            await AxiosPrivate.post(
                 `/api/events/${event._id}/registration`,
                 registrationData
             );
-            const data = await response.data;
-            console.log(data);
 
+            toast.success("Event booked successfully");
             setLoading(false);
             setOpen(false);
             form.reset();
         } catch (error) {
-            setLoading(false);
             console.log("Error on registration modal", error);
+            if (error.response) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong");
+            }
+            setLoading(false);
+            setOpen(false);
+            form.reset();
         }
     };
     return (

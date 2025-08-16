@@ -16,9 +16,6 @@ export default function UserButton() {
 
     const handleLogout = async () => {
         await logout();
-        const response = await AxiosPublic.delete("/api/user/logout");
-        const data = response.data;
-        console.log(data);
     };
 
     return (

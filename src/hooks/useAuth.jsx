@@ -8,30 +8,54 @@ import {
     signOut,
 } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
+import useAxiosPublic from "./useAxiosPublic";
+import { useState } from "react";
 
 const useAuth = () => {
     const auth = getAuth(app);
     const googleProvider = new GoogleAuthProvider();
+    const AxiosPublic = useAxiosPublic();
 
     const [user, loading] = useAuthState(auth);
+    const [authLoading, setAuthLoading] = useState(false);
 
     const createUser = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password);
     };
 
-    const login = (email, password) => {
-        return signInWithEmailAndPassword(auth, email, password);
+    const login = async (email, password) => {
+        setAuthLoading(true);
+        const login = await signInWithEmailAndPassword(auth, email, password);
+        await AxiosPublic.post("/api/user/jwt", { email });
+        setAuthLoading(false);
+        return login;
     };
 
-    const signInWithGoogle = () => {
-        return signInWithPopup(auth, googleProvider);
+    const signInWithGoogle = async () => {
+        setAuthLoading(true);
+
+        const signInWithGoogle = await signInWithPopup(auth, googleProvider);
+        await AxiosPublic.post("/api/user/jwt", { email });
+        setAuthLoading(false);
+
+        return signInWithGoogle;
     };
 
-    const logout = () => {
-        return signOut(auth);
+    const logout = async () => {
+        const logout = await signOut(auth);
+        await AxiosPublic.delete("/api/user/logout");
+        return logout;
     };
 
-    return { createUser, login, loading, user, signInWithGoogle, logout };
+    return {
+        createUser,
+        login,
+        loading,
+        user,
+        signInWithGoogle,
+        logout,
+        authLoading,
+    };
 };
 
 export default useAuth;

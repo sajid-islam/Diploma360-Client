@@ -52,13 +52,13 @@ export default function EventCard({ event }) {
                 {/* Date & Time */}
                 <div className="flex items-center text-sm text-gray-600">
                     <FaCalendarAlt className="mr-2" />
-                    {new Date(event.date).toLocaleString()}
+                    {new Date(event.date).toLocaleDateString()}
                 </div>
 
                 {/* Available Seats */}
                 <div className="flex items-center text-sm text-gray-600">
                     <FaUsers className="mr-2" />
-                    {event.numberOfSeats} seats available
+                    {event.numberOfSeats} সিটস অ্যাভেইলেবল
                 </div>
             </CardContent>
 
@@ -66,7 +66,7 @@ export default function EventCard({ event }) {
             <CardFooter>
                 <Link href={`/events/${event._id}`} className="w-full">
                     <Button variant="secondary" className="w-full">
-                        View Details
+                        বিস্তারিত দেখুন
                     </Button>
                 </Link>
             </CardFooter>

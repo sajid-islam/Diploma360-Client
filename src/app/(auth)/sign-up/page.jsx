@@ -15,7 +15,7 @@ export default function SignUpPage() {
     useAuthRedirect();
 
     const AxiosPublic = useAxiosPublic();
-    const { createUser, loading } = useAuth();
+    const { createUser, loading, authLoading } = useAuth();
     const router = useRouter();
 
     const handleSubmit = async (e) => {
@@ -86,11 +86,11 @@ export default function SignUpPage() {
                         />
                     </div>
                     <Button
-                        disabled={loading}
+                        disabled={authLoading}
                         type="submit"
                         className="w-full mt-6"
                     >
-                        {loading ? "সাইন আপ...." : "সাইন আপ"}
+                        {authLoading ? "সাইন আপ হচ্ছে" : "সাইন আপ"}
                     </Button>
                 </form>
 
