@@ -10,15 +10,18 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
+import ReviewModal from "@/components/ReviewModal/ReviewModal";
 
 const MyEventPage = () => {
     const AxiosPrivate = useAxiosPrivate();
     const { user } = useAuth();
     const [bookings, setBookings] = useState([]);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -64,6 +67,9 @@ const MyEventPage = () => {
                                 <TableHead className="text-right min-w-[120px]">
                                     অ্যাকশন
                                 </TableHead>
+                                <TableHead className="text-right min-w-[120px]">
+                                    অ্যাকশন
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -88,6 +94,22 @@ const MyEventPage = () => {
                                         >
                                             বাতিল করুন
                                         </Button>
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <Dialog
+                                            open={open}
+                                            onOpenChange={setOpen}
+                                        >
+                                            <DialogTrigger asChild>
+                                                <Button size="sm">
+                                                    রিভিউ দিন
+                                                </Button>
+                                            </DialogTrigger>
+                                            <ReviewModal
+                                                id={booking._id}
+                                                setOpen={setOpen}
+                                            />
+                                        </Dialog>
                                     </TableCell>
                                 </TableRow>
                             ))}
