@@ -46,7 +46,7 @@ const categories = [
 export default function CategoriesSection() {
     return (
         <section className="py-12">
-            <div className="max-w-6xl mx-auto px-6">
+            <div className="px-6">
                 <h2 className="text-3xl font-bold text-center mb-8">
                     ইভেন্ট ক্যাটাগরি
                 </h2>

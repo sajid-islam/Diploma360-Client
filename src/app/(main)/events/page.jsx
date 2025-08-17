@@ -1,5 +1,5 @@
 "use client";
-import EventCard from "@/components/EventCard/EventCard";
+import EventCard from "../../../components/EventCard/EventCard";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
 import { useEffect, useState } from "react";
 
