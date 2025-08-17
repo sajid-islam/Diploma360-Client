@@ -7,12 +7,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useIsAdmin from "@/hooks/useIsAdmin";
 
 export default function UserButton() {
     const [open, setOpen] = useState(false);
     const { user, logout } = useAuth();
     const router = useRouter();
     const AxiosPublic = useAxiosPublic();
+    const { isAdmin } = useIsAdmin();
 
     const handleLogout = async () => {
         await logout();
@@ -48,12 +50,14 @@ export default function UserButton() {
                     >
                         <FaUser className="mr-2" /> প্রোফাইল
                     </button>
-                    <button
-                        onClick={() => router.push("/add-event")}
-                        className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100"
-                    >
-                        <IoMdAddCircle className="mr-2" /> অ্যাড ইভেন্ট
-                    </button>
+                    {isAdmin && (
+                        <button
+                            onClick={() => router.push("/add-event")}
+                            className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100"
+                        >
+                            <IoMdAddCircle className="mr-2" /> অ্যাড ইভেন্ট
+                        </button>
+                    )}
                     <button
                         onClick={handleLogout}
                         className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
