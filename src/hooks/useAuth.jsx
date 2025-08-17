@@ -25,8 +25,8 @@ const useAuth = () => {
 
     const login = async (email, password) => {
         setAuthLoading(true);
-        const login = await signInWithEmailAndPassword(auth, email, password);
-        await AxiosPublic.post("/api/user/jwt", { email });
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        await AxiosPublic.post("/api/user/jwt", { email: result.user.email });
         setAuthLoading(false);
         return login;
     };
