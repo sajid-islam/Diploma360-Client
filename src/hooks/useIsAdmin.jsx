@@ -10,13 +10,12 @@ const useIsAdmin = () => {
     const AxiosPrivate = useAxiosPrivate();
 
     useEffect(() => {
+        if (loading) return;
         const checkAdmin = async () => {
             try {
-                if (!loading) {
-                    const res = await AxiosPrivate.get("/api/user/is-admin");
-                    const data = await res.data;
-                    setIsAdmin(data.isAdmin);
-                }
+                const res = await AxiosPrivate.get("/api/user/is-admin");
+
+                setIsAdmin(res.data.isAdmin);
             } catch (error) {
                 console.error("Admin check failed:", error);
                 setIsAdmin(false);
