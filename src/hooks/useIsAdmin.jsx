@@ -5,12 +5,12 @@ import useAuth from "./useAuth";
 
 const useIsAdmin = () => {
     const [isAdmin, setIsAdmin] = useState(false);
-    const { loading } = useAuth();
+    const { loading, user } = useAuth();
     console.log(isAdmin);
     const AxiosPrivate = useAxiosPrivate();
 
     useEffect(() => {
-        if (loading) return;
+        if (loading || !user) return;
         const checkAdmin = async () => {
             try {
                 const res = await AxiosPrivate.get("/api/user/is-admin");
