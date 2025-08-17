@@ -5,6 +5,7 @@ import useAuth from "./useAuth";
 
 const useIsAdmin = () => {
     const [isAdmin, setIsAdmin] = useState(false);
+    const [reload, setReload] = useState(false);
     const { loading, user } = useAuth();
     const AxiosPrivate = useAxiosPrivate();
 
@@ -17,7 +18,7 @@ const useIsAdmin = () => {
                 setIsAdmin(res.data.isAdmin);
             } catch (error) {
                 if (error.response?.status === 401) {
-                    console.warn("Token not available, please login again");
+                    setReload(true);
                 }
                 console.error("Admin check failed:", error);
                 setIsAdmin(false);
@@ -25,7 +26,7 @@ const useIsAdmin = () => {
         };
 
         checkAdmin();
-    }, [loading, user, AxiosPrivate]); // ✅ include necessary deps
+    }, [loading, user, AxiosPrivate, reload]); // ✅ include necessary deps
 
     return { isAdmin };
 };
