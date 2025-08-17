@@ -16,6 +16,7 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
 import ReviewModal from "@/components/ReviewModal/ReviewModal";
+import { toast } from "sonner";
 
 const MyEventPage = () => {
     const AxiosPrivate = useAxiosPrivate();
