@@ -12,7 +12,8 @@ const useIsAdmin = () => {
         const checkAdmin = async () => {
             try {
                 const res = await AxiosPrivate.get("/api/user/is-admin");
-                setIsAdmin(res.data.isAdmin);
+                const data = await res.data;
+                setIsAdmin(data.isAdmin);
             } catch (error) {
                 console.error("Admin check failed:", error);
                 setIsAdmin(false);
