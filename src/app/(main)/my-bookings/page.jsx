@@ -22,6 +22,12 @@ const MyEventPage = () => {
     const { user } = useAuth();
     const [bookings, setBookings] = useState([]);
     const [open, setOpen] = useState(false);
+    const [selectedDialogId, setSelectedDialogId] = useState(null);
+
+    const handleOpenModal = (eventId) => {
+        setSelectedDialogId(eventId);
+        setOpen(true);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -89,7 +95,7 @@ const MyEventPage = () => {
                                             variant="destructive"
                                             size="sm"
                                             onClick={() =>
-                                                handleCancel(booking.id)
+                                                handleCancel(booking._id)
                                             }
                                         >
                                             বাতিল করুন
@@ -101,12 +107,19 @@ const MyEventPage = () => {
                                             onOpenChange={setOpen}
                                         >
                                             <DialogTrigger asChild>
-                                                <Button size="sm">
+                                                <Button
+                                                    onClick={() =>
+                                                        handleOpenModal(
+                                                            booking._id
+                                                        )
+                                                    }
+                                                    size="sm"
+                                                >
                                                     রিভিউ দিন
                                                 </Button>
                                             </DialogTrigger>
                                             <ReviewModal
-                                                id={booking._id}
+                                                id={selectedDialogId}
                                                 setOpen={setOpen}
                                             />
                                         </Dialog>
