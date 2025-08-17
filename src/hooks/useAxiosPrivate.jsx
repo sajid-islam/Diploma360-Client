@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 import { useRouter } from "next/navigation";
 
 const AxiosPrivate = axios.create({
-    baseURL: "http://localhost:3001",
+    baseURL: "https://diploma360-server.onrender.com",
     withCredentials: true,
 });
 

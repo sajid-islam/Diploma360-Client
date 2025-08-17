@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const AxiosPublic = axios.create({
-    baseURL: "http://localhost:3001",
+    baseURL: "https://diploma360-server.onrender.com",
     withCredentials: true,
 });
 const useAxiosPublic = () => {
