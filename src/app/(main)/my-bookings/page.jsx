@@ -46,7 +46,26 @@ const MyEventPage = () => {
         }
     }, [user]);
 
-    const handleCancel = (id) => {};
+    const handleCancel = async (id) => {
+        if (!confirm("আপনি কি সত্যিই এই ইভেন্ট বাতিল করতে চান?")) return;
+
+        try {
+            const response = await AxiosPrivate.delete(
+                `/api/events/${id}/registration`
+            );
+
+            if (response.data.success) {
+                // Remove canceled booking from state
+                setBookings((prev) => prev.filter((b) => b._id !== id));
+                toast.success("বুকিং সফলভাবে বাতিল হয়েছে");
+            } else {
+                toast.error(response.data.message || "কিছু ভুল হয়েছে");
+            }
+        } catch (error) {
+            console.error("Error cancelling booking:", error);
+            toast.error("কিছু ভুল হয়েছে। পুনরায় চেষ্টা করুন।");
+        }
+    };
 
     return (
         <ProtectedRoute>
