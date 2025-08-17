@@ -5,7 +5,7 @@ import useAuth from "./useAuth";
 
 const useIsAdmin = () => {
     const [isAdmin, setIsAdmin] = useState(false);
-    const [loading] = useAuth();
+    const { loading } = useAuth();
     console.log(isAdmin);
     const AxiosPrivate = useAxiosPrivate();
 
