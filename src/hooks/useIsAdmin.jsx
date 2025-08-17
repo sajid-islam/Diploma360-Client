@@ -22,7 +22,8 @@ const useIsAdmin = () => {
             }
         };
 
-        checkAdmin();
+        const timer = setTimeout(checkAdmin, 50); // 50ms delay
+        return () => clearTimeout(timer);
     }, [loading, AxiosPrivate, user]);
 
     return { isAdmin };
