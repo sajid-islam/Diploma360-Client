@@ -33,9 +33,9 @@ const ReviewsSection = () => {
                 </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
-                {reviews.map((r) => (
+                {reviews.map((r, index) => (
                     <div
-                        key={r._id}
+                        key={index}
                         className="relative bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 w-full mx-auto"
                     >
                         {/* Quote Icon */}
