@@ -11,12 +11,12 @@ const Navbar = () => {
     return (
         <div className="px-5 h-16 flex items-center justify-between">
             <div>
-                <h1 className="text-2xl font-semibold">
+                <Link href={"/"} className="text-2xl font-semibold">
                     <span>ডিপ্লোমা </span>
                     <span className="text-custom-primary font-extrabold">
                         ৩৬০
                     </span>
-                </h1>
+                </Link>
             </div>
             <div className="flex items-center gap-4">
                 <NavLinks />

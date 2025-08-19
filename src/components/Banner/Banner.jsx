@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "../ui/button";
 import HeroImage from "@/images/hero-image.png";
+import Link from "next/link";
 
 const Banner = () => {
     return (
@@ -15,7 +16,9 @@ const Banner = () => {
                     নেটওয়ার্কিং—সব এক জায়গায়। আপনার জন্য সাজানো সব ডিপ্লোমা
                     ইভেন্ট, ওয়ার্কশপ আর প্রতিযোগিতা, এখন হাতের মুঠোয়!
                 </p>
-                <Button className="w-fit">চলো, ইভেন্টে যাই 🚀</Button>
+                <Button className="w-fit">
+                    <Link href={"/events"}>চলো, ইভেন্টে যাই 🚀</Link>
+                </Button>
             </div>
             <div className="flex-1 md:flex justify-center hidden">
                 <Image
