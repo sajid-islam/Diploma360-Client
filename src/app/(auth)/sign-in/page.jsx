@@ -12,7 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function SignInPage() {
     useAuthRedirect();
 
-    const { login, authLoading } = useAuth();
+    const { login, authLoading, setAuthLoading } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -26,6 +26,18 @@ export default function SignInPage() {
         await login(email, password);
         e.target.reset();
         router.push(redirect);
+    };
+
+    const handleAdminLogin = async (e) => {
+        try {
+            const adminEmail = "admin@gmail.com";
+            const adminPassword = "123456";
+            await login(adminEmail, adminPassword);
+            console.log(adminEmail, adminPassword);
+            router.push(redirect);
+        } catch (error) {
+            setAuthLoading(false);
+        }
     };
 
     return (
@@ -53,13 +65,22 @@ export default function SignInPage() {
                             className="mt-1"
                         />
                     </div>
-                    <Button
-                        disabled={authLoading}
-                        type="submit"
-                        className="w-full mt-6 "
-                    >
-                        {authLoading ? "লগ ইন হচ্ছে" : "লগ ইন"}
-                    </Button>
+                    <div className="flex gap-2 mt-6">
+                        <Button
+                            disabled={authLoading}
+                            type="submit"
+                            className="flex-1"
+                        >
+                            {authLoading ? "লগ ইন হচ্ছে" : "লগ ইন"}
+                        </Button>
+                        <Button
+                            disabled={authLoading}
+                            onClick={handleAdminLogin}
+                            className=""
+                        >
+                            {authLoading ? "লগ ইন হচ্ছে" : "লগ ইন অ্যাডমিন"}
+                        </Button>
+                    </div>
                 </form>
 
                 <GoogleAuthBtn />

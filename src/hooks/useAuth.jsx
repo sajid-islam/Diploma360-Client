@@ -56,6 +56,7 @@ const useAuth = () => {
         signInWithGoogle,
         logout,
         authLoading,
+        setAuthLoading,
     };
 };
 
