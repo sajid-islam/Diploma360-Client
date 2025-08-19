@@ -33,12 +33,12 @@ const categories = [
     },
     {
         id: 5,
-        name: "আর্টস ও ডিজাইন",
+        name: "ডিজাইন",
         icon: <FaPaintBrush className="text-pink-500 text-3xl" />,
     },
     {
         id: 6,
-        name: "সাধারণ ও দক্ষতা উন্নয়ন",
+        name: "দক্ষতা উন্নয়ন",
         icon: <FaUsers className="text-red-500 text-3xl" />,
     },
 ];
