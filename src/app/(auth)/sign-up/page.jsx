@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
 import GoogleAuthBtn from "@/components/GoogleAuthBtn";
+import { toast } from "sonner";
 
 export default function SignUpPage() {
     useAuthRedirect();
@@ -46,7 +47,19 @@ export default function SignUpPage() {
             router.push(redirect);
             e.target.reset();
         } catch (error) {
-            console.error("SignUP Error", error);
+            console.error("SignUP Error", error.message);
+            if (
+                error.message === "Firebase: Error (auth/email-already-in-use)."
+            ) {
+                toast("An account already exists. Did you mean to log in?", {
+                    action: {
+                        label: "Login",
+                        onClick: () => router.push("/sign-in"),
+                    },
+                });
+            } else {
+                toast.error("Something went wrong");
+            }
         }
     };
 

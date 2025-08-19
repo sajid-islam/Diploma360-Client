@@ -8,6 +8,7 @@ import useAuthRedirect from "@/hooks/useAuthRedirect";
 import GoogleAuthBtn from "@/components/GoogleAuthBtn";
 import useAuth from "@/hooks/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 export default function SignInPage() {
     useAuthRedirect();
@@ -19,13 +20,25 @@ export default function SignInPage() {
     const redirect = searchParams.get("redirect") || "/";
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        const email = e.target.elements.email.value;
-        const password = e.target.elements.password.value;
+        try {
+            e.preventDefault();
+            const email = e.target.elements.email.value;
+            const password = e.target.elements.password.value;
 
-        await login(email, password);
-        e.target.reset();
-        router.push(redirect);
+            await login(email, password);
+            e.target.reset();
+            router.push(redirect);
+        } catch (error) {
+            console.log();
+            if (
+                error.message === "Firebase: Error (auth/invalid-credential)."
+            ) {
+                toast.error("Incorrect email or password. Please try again.");
+            } else {
+                toast.error("Something went wrong");
+            }
+            setAuthLoading(false);
+        }
     };
 
     const handleAdminLogin = async (e) => {
@@ -36,6 +49,7 @@ export default function SignInPage() {
             console.log(adminEmail, adminPassword);
             router.push(redirect);
         } catch (error) {
+            console.log(error);
             setAuthLoading(false);
         }
     };
