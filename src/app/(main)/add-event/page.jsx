@@ -199,8 +199,11 @@ export default function AddEventPage() {
 
                     {/* Organizer */}
                     <div className="flex flex-col space-y-2">
-                        <Label htmlFor="organizer">Organizer</Label>
-                        <Input id="organizer" name="organizer" required />
+                        <Label htmlFor="organizer">
+                            Organizer{" "}
+                            <span className="text-red-500">(optional)</span>
+                        </Label>
+                        <Input id="organizer" name="organizer" />
                     </div>
 
                     {/* Seats */}
@@ -244,11 +247,13 @@ export default function AddEventPage() {
                     </div>
                     {/* Deadline */}
                     <div className="flex flex-col space-y-2">
-                        <Label htmlFor="deadline">
-                            Deadline{" "}
-                            <span className="text-red-500">(optional)</span>
-                        </Label>
-                        <Input id="deadline" name="deadline" type="date" />
+                        <Label htmlFor="deadline">Deadline </Label>
+                        <Input
+                            id="deadline"
+                            name="deadline"
+                            type="date"
+                            required
+                        />
                     </div>
                 </div>
 
