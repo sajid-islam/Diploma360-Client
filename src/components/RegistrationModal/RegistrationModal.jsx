@@ -16,6 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
+import BkashPaymentSection from "./BkashPaymentSection";
 
 const technologies = [
     "Computer Technology",
@@ -45,24 +46,33 @@ const RegistrationModal = ({ event, setOpen }) => {
     const { user } = useAuth();
     const AxiosPrivate = useAxiosPrivate();
     const [loading, setLoading] = useState(false);
-
-    // new state to toggle
     const [studyOption, setStudyOption] = useState("");
+    // const [transactionId, setTransactionId] = useState("");
 
-    const handleSubmit = async (e) => {
+    const handlePayment = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const form = e.target;
 
+        const form = e.target;
         const name = form.name.value;
         const email = form.email.value;
         const phone = form.phone.value;
         const studyStatus = form.studyOption.value;
+        const transactionId = form.transactionId?.value;
 
-        // collect extra fields only if "want-to-study"
-        const sscYear = form.sscYear.value;
-        const address = form.address.value;
-        const technology = form.technology.value;
+        const sscYear = form.sscYear?.value;
+        const address = form.address?.value;
+        const technology = form.technology?.value;
+
+        // Very light client-side check for TrxID (8–16 chars, letters/numbers)
+        if (
+            !transactionId ||
+            !/^[A-Za-z0-9]{8,16}$/.test(transactionId.trim())
+        ) {
+            toast.error("সঠিক ট্রান্স্যাকশন আইডি দিন (৮–১৬ অক্ষর/সংখ্যা)।");
+            setLoading(false);
+            return;
+        }
 
         try {
             const registrationData = {
@@ -73,27 +83,25 @@ const RegistrationModal = ({ event, setOpen }) => {
                 sscYear,
                 address,
                 technology,
+                paymentMethod: "bkash",
+                transactionId: transactionId.trim().toUpperCase(),
             };
-            console.log(registrationData);
 
             await AxiosPrivate.post(
                 `/api/events/${event._id}/registration`,
                 registrationData
             );
 
-            toast.success("Event booked successfully");
-            setLoading(false);
+            toast.success("পেমেন্ট ইনফো সাবমিট হয়েছে 🎉 আমরা যাচাই করছি।");
             setOpen(false);
             form.reset();
         } catch (error) {
             console.log("Error on registration modal", error);
-            if (error.response) {
+            if (error?.response?.data?.message) {
                 toast.error(error.response.data.message);
             } else {
-                toast.error("Something went wrong");
+                toast.error("কিছু সমস্যা হয়েছে, পরে আবার চেষ্টা করুন।");
             }
-            setOpen(false);
-            form.reset();
         } finally {
             setLoading(false);
         }
@@ -109,14 +117,15 @@ const RegistrationModal = ({ event, setOpen }) => {
                     জন্য রেজিস্ট্রেশন করুন
                 </DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+
+            <form onSubmit={handlePayment} className="space-y-4 mt-4">
                 {/* Name */}
                 <div>
                     <label className="block text-sm font-medium">নাম</label>
                     <input
                         type="text"
                         name="name"
-                        className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                        className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-pink-200"
                         readOnly
                         required
                         value={user?.displayName || ""}
@@ -129,7 +138,7 @@ const RegistrationModal = ({ event, setOpen }) => {
                     <input
                         type="email"
                         name="email"
-                        className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                        className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-pink-200"
                         readOnly
                         required
                         value={user?.email || ""}
@@ -144,7 +153,7 @@ const RegistrationModal = ({ event, setOpen }) => {
                     <input
                         type="text"
                         name="phone"
-                        className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                        className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-pink-200"
                         required
                     />
                 </div>
@@ -158,7 +167,7 @@ const RegistrationModal = ({ event, setOpen }) => {
                         name="studyOption"
                         value={studyOption}
                         onChange={(e) => setStudyOption(e.target.value)}
-                        className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                        className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-pink-200"
                         required
                     >
                         <option value="">-- সিলেক্ট করুন --</option>
@@ -181,7 +190,7 @@ const RegistrationModal = ({ event, setOpen }) => {
                             <input
                                 type="number"
                                 name="sscYear"
-                                className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                                className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-pink-200"
                                 required
                             />
                         </div>
@@ -192,7 +201,7 @@ const RegistrationModal = ({ event, setOpen }) => {
                             <input
                                 type="text"
                                 name="address"
-                                className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                                className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-pink-200"
                                 required
                             />
                         </div>
@@ -226,14 +235,22 @@ const RegistrationModal = ({ event, setOpen }) => {
                     </>
                 )}
 
-                {/* Submit */}
+                {/* --- bKash Themed Payment Section --- */}
+                <BkashPaymentSection event={event} />
+
+                {/* Payment Button (replaces Submit) */}
                 <Button
                     disabled={loading}
                     type="submit"
-                    className="w-full bg-custom-secondary hover:bg-custom-secondary/90"
+                    className="w-full bg-[#E2136E] hover:bg-[#c80f5f]"
                 >
-                    {loading ? "সাবমিট হচ্ছে" : "সাবমিট রেজিস্ট্রেশন"}
+                    {loading ? "প্রসেস হচ্ছে..." : "পেমেন্ট তথ্য সাবমিট করুন"}
                 </Button>
+
+                <p className="text-[11px] text-gray-500 text-center">
+                    পেমেন্ট ভেরিফাই হতে কিছু সময় লাগতে পারে। সমস্যায় পড়লে
+                    আয়োজকের সাথে যোগাযোগ করুন।
+                </p>
             </form>
         </DialogContent>
     );
