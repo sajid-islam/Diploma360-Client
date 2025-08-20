@@ -58,7 +58,10 @@ export default function EventDetailsPage() {
                 </div>
                 <div className="text-right">
                     <p className="text-lg font-semibold text-gray-800">
-                        মূল্য: <span className="text-orange-600">200 টাকা</span>
+                        মূল্য:{" "}
+                        <span className="text-orange-600">
+                            {event.fee || 200} টাকা
+                        </span>
                     </p>
                     {!user ? (
                         <Link href={`/sign-in?redirect=/events/${id}`}>
@@ -106,7 +109,7 @@ export default function EventDetailsPage() {
                         <span className="font-semibold">
                             💰 রেজিস্ট্রেশন ফি:
                         </span>{" "}
-                        200TK
+                        {event.fee || 200}TK
                     </p>
                     <p>
                         <span className="font-semibold">⏳ শেষ তারিখ:</span>{" "}

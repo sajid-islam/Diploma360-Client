@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
     SelectTrigger,
     SelectValue,
@@ -14,12 +15,35 @@ import {
 import { Button } from "@/components/ui/button";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/Loader/Loader";
 
 export default function AddEventPage() {
     const [preview, setPreview] = useState(null);
     const AxiosPrivate = useAxiosPrivate();
     const [loading, setLoading] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [categoriesLoading, setCategoriesLoading] = useState(false);
+    const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
     const router = useRouter();
+
+    // Fetch event categories
+    useEffect(() => {
+        const fetchData = async () => {
+            setCategoriesLoading(true);
+            try {
+                const response = await AxiosPrivate.get(
+                    "/api/events/categories"
+                );
+                const categories = response.data;
+                setCategories(categories);
+            } catch (error) {
+                console.log("Error fetching categories", error);
+            } finally {
+                setCategoriesLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
     // Convert image to Base64
     const getBase64 = (file) => {
@@ -44,11 +68,16 @@ export default function AddEventPage() {
             eventName: form.eventName.value,
             date: form.date.value,
             location: form.location.value,
-            category: form.category.value,
+            category: isAddingNewCategory
+                ? form.newCategory.value
+                : form.category.value,
             description: form.description.value,
             numberOfSeats: form.seats.value,
             image: imageBase64, // base64 string
             eventLink: form.link.value,
+            fee: form.fee.value,
+            organizer: form.organizer.value,
+            deadline: form.deadline.value,
         };
         console.log(eventData);
         setLoading(true);
@@ -100,19 +129,126 @@ export default function AddEventPage() {
                     {/* Category */}
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="category">Category</Label>
-                        <Input id="category" name="category" required />
+                        {isAddingNewCategory || categories.length === 0 ? (
+                            <Input
+                                id="newCategory"
+                                name="newCategory"
+                                required
+                            />
+                        ) : (
+                            <Select
+                                onValueChange={(value) => {
+                                    if (value === "add-new") {
+                                        setIsAddingNewCategory(true);
+                                    }
+                                }}
+                                name="category"
+                                required
+                                className="w-full"
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select event category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {/* Show Loader when categories is fetching */}
+                                        {categoriesLoading ? (
+                                            <Loader size={5} />
+                                        ) : (
+                                            <>
+                                                {/* map categories for select option */}
+                                                {categories.map(
+                                                    (category, index) => (
+                                                        <SelectItem
+                                                            key={index}
+                                                            value={category}
+                                                            disabled={
+                                                                categoriesLoading
+                                                            }
+                                                        >
+                                                            {categoriesLoading ? (
+                                                                <Loader />
+                                                            ) : (
+                                                                category
+                                                            )}
+                                                        </SelectItem>
+                                                    )
+                                                )}
+                                                <SelectItem value="add-new">
+                                                    Add New
+                                                </SelectItem>
+                                            </>
+                                        )}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        )}
+                    </div>
+
+                    {/* Fee */}
+                    <div className="flex flex-col space-y-2">
+                        <Label htmlFor="fee">Fee</Label>
+                        <Input
+                            id="fee"
+                            name="fee"
+                            type="number"
+                            min={0}
+                            required
+                        />
+                    </div>
+
+                    {/* Organizer */}
+                    <div className="flex flex-col space-y-2">
+                        <Label htmlFor="organizer">Organizer</Label>
+                        <Input id="organizer" name="organizer" required />
                     </div>
 
                     {/* Seats */}
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="seats">Number of Seats</Label>
-                        <Input id="seats" name="seats" type="number" required />
+                        <Input
+                            min={1}
+                            id="seats"
+                            name="seats"
+                            type="number"
+                            required
+                        />
                     </div>
 
                     {/* Link */}
                     <div className="flex flex-col space-y-2">
-                        <Label htmlFor="link">Event Link (optional)</Label>
+                        <Label htmlFor="link">
+                            Event Link{" "}
+                            <span className="text-red-500">(optional)</span>
+                        </Label>
                         <Input id="link" name="link" type="url" />
+                    </div>
+                    {/* Image Upload */}
+                    <div className="flex flex-col space-y-2">
+                        <Label htmlFor="image">Upload Event Image</Label>
+                        <Input
+                            id="image"
+                            name="image"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            required
+                        />
+                        {preview && (
+                            <img
+                                src={preview}
+                                alt="Preview"
+                                className="w-32 h-32 object-cover rounded-lg mt-2"
+                            />
+                        )}
+                    </div>
+                    {/* Deadline */}
+                    <div className="flex flex-col space-y-2">
+                        <Label htmlFor="deadline">
+                            Deadline{" "}
+                            <span className="text-red-500">(optional)</span>
+                        </Label>
+                        <Input id="deadline" name="deadline" type="date" />
                     </div>
                 </div>
 
@@ -125,26 +261,6 @@ export default function AddEventPage() {
                         rows={4}
                         required
                     />
-                </div>
-
-                {/* Image Upload */}
-                <div className="flex flex-col space-y-2">
-                    <Label htmlFor="image">Upload Event Image</Label>
-                    <Input
-                        id="image"
-                        name="image"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        required
-                    />
-                    {preview && (
-                        <img
-                            src={preview}
-                            alt="Preview"
-                            className="w-32 h-32 object-cover rounded-lg mt-2"
-                        />
-                    )}
                 </div>
 
                 {/* Submit */}
