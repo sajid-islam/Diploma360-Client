@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const AxiosPrivate = axios.create({
-    baseURL: "https://diploma360-server.vercel.app",
+    baseURL: "http://localhost:3001",
     withCredentials: true,
 });
 

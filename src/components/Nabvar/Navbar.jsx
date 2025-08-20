@@ -37,12 +37,12 @@ const Navbar = () => {
                                 >
                                     <Link href="/sign-up">সাইন আপ</Link>
                                 </Button>
-                                <div>
-                                    <NavbarToggleBtn />
-                                </div>
                             </div>
                         </>
                     )}
+                </div>
+                <div>
+                    <NavbarToggleBtn />
                 </div>
             </div>
         </div>
