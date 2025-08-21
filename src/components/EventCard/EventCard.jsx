@@ -46,7 +46,7 @@ export default function EventCard({ event }) {
                 {/* Location */}
                 <div className="flex items-center text-sm text-gray-600">
                     <FaMapMarkerAlt className="mr-2" />
-                    {event.location}
+                    {event.location === "online" ? "অনলাইন" : event.location}
                 </div>
 
                 {/* Date & Time */}
