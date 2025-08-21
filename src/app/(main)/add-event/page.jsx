@@ -119,18 +119,6 @@ export default function AddEventPage() {
                         <Input id="eventName" name="eventName" required />
                     </div>
 
-                    {/* Date */}
-                    <div className="flex flex-col space-y-2">
-                        <Label htmlFor="date">Date</Label>
-                        <Input
-                            id="date"
-                            name="date"
-                            type="date"
-                            min={today}
-                            required
-                        />
-                    </div>
-
                     {/* Location */}
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="location">Location</Label>
@@ -237,25 +225,25 @@ export default function AddEventPage() {
                         </Label>
                         <Input id="link" name="link" type="url" />
                     </div>
-                    {/* Image Upload */}
+
+                    {/* Date */}
                     <div className="flex flex-col space-y-2">
-                        <Label htmlFor="image">Upload Event Image</Label>
+                        <Label htmlFor="date">Date</Label>
                         <Input
-                            id="image"
-                            name="image"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
+                            id="date"
+                            name="date"
+                            type="date"
+                            min={today}
                             required
                         />
-                        {preview && (
-                            <img
-                                src={preview}
-                                alt="Preview"
-                                className="w-32 h-32 object-cover rounded-lg mt-2"
-                            />
-                        )}
                     </div>
+
+                    {/* Time */}
+                    <div className="flex flex-col space-y-2">
+                        <Label htmlFor="time">Time</Label>
+                        <Input id="time" name="time" type="time" required />
+                    </div>
+
                     {/* Deadline */}
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="deadline">Deadline </Label>
@@ -269,6 +257,25 @@ export default function AddEventPage() {
                     </div>
                 </div>
 
+                {/* Image Upload */}
+                <div className="flex flex-col space-y-2">
+                    <Label htmlFor="image">Upload Event Image</Label>
+                    <Input
+                        id="image"
+                        name="image"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        required
+                    />
+                    {preview && (
+                        <img
+                            src={preview}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded-lg mt-2"
+                        />
+                    )}
+                </div>
                 {/* Description (full width) */}
                 <div className="flex flex-col space-y-2">
                     <Label htmlFor="description">Description</Label>
