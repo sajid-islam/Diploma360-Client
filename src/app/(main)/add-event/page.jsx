@@ -16,15 +16,20 @@ import { Button } from "@/components/ui/button";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
+import moment from "moment";
 
 export default function AddEventPage() {
-    const [preview, setPreview] = useState(null);
     const AxiosPrivate = useAxiosPrivate();
+    const router = useRouter();
+    const today = moment().format("YYYY-MM-DD");
+    console.log(today);
+
+    // States
+    const [preview, setPreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     const [categoriesLoading, setCategoriesLoading] = useState(false);
     const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
-    const router = useRouter();
 
     // Fetch event categories
     useEffect(() => {
@@ -117,7 +122,13 @@ export default function AddEventPage() {
                     {/* Date */}
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="date">Date</Label>
-                        <Input id="date" name="date" type="date" required />
+                        <Input
+                            id="date"
+                            name="date"
+                            type="date"
+                            min={today}
+                            required
+                        />
                     </div>
 
                     {/* Location */}
@@ -252,6 +263,7 @@ export default function AddEventPage() {
                             id="deadline"
                             name="deadline"
                             type="date"
+                            min={today}
                             required
                         />
                     </div>
