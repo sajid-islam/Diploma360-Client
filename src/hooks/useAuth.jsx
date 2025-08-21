@@ -28,7 +28,7 @@ const useAuth = () => {
         const result = await signInWithEmailAndPassword(auth, email, password);
         await AxiosPublic.post("/api/user/jwt", { email: result.user.email });
         setAuthLoading(false);
-        return login;
+        return result;
     };
 
     const signInWithGoogle = async () => {
