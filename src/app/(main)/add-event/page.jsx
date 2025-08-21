@@ -22,7 +22,6 @@ export default function AddEventPage() {
     const AxiosPrivate = useAxiosPrivate();
     const router = useRouter();
     const today = moment().format("YYYY-MM-DD");
-    console.log(today);
 
     // States
     const [preview, setPreview] = useState(null);
@@ -30,6 +29,7 @@ export default function AddEventPage() {
     const [categories, setCategories] = useState([]);
     const [categoriesLoading, setCategoriesLoading] = useState(false);
     const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
+    const [isLocationTypePhysical, setIsLocationTypePhysical] = useState(false);
 
     // Fetch event categories
     useEffect(() => {
@@ -71,27 +71,39 @@ export default function AddEventPage() {
 
         const eventData = {
             eventName: form.eventName.value,
-            date: form.date.value,
-            location: form.location.value,
+            locationType: isLocationTypePhysical
+                ? "physical"
+                : form.locationType.value,
+            location: isLocationTypePhysical
+                ? form.location.value
+                : form.locationType.value,
             category: isAddingNewCategory
                 ? form.newCategory.value
                 : form.category.value,
             description: form.description.value,
-            numberOfSeats: form.seats.value,
+            numberOfSeats: form.seats.value || null,
             image: imageBase64, // base64 string
-            eventLink: form.link.value,
+            eventLink: form.link.value || null,
             fee: form.fee.value,
             organizer: form.organizer.value,
+            date: form.date.value,
+            time: form.time.value || null,
             deadline: form.deadline.value,
         };
         console.log(eventData);
-        setLoading(true);
-        const response = await AxiosPrivate.post("/api/events", eventData);
-        const data = await response.data;
-        setLoading(false);
-        router.push("/events");
+        try {
+            setLoading(true);
+            const response = await AxiosPrivate.post("/api/events", eventData);
+            const data = await response.data;
+            setLoading(false);
+            router.push("/events");
 
-        console.log("res Data:", data);
+            console.log("res Data:", data);
+        } catch (error) {
+            console.log("Error creating event", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleImageChange = async (e) => {
@@ -122,7 +134,34 @@ export default function AddEventPage() {
                     {/* Location */}
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="location">Location</Label>
-                        <Input id="location" name="location" required />
+                        {isLocationTypePhysical ? (
+                            <Input id="location" name="location" required />
+                        ) : (
+                            <Select
+                                onValueChange={(value) => {
+                                    if (value === "physical") {
+                                        setIsLocationTypePhysical(true);
+                                    }
+                                }}
+                                name="locationType"
+                                id="location"
+                                required
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select location" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="online">
+                                            অনলাইন
+                                        </SelectItem>
+                                        <SelectItem value="physical">
+                                            ফিজিক্যাল
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        )}
                     </div>
 
                     {/* Category */}
@@ -207,13 +246,21 @@ export default function AddEventPage() {
 
                     {/* Seats */}
                     <div className="flex flex-col space-y-2">
-                        <Label htmlFor="seats">Number of Seats</Label>
+                        <Label htmlFor="seats">
+                            Number of Seats{" "}
+                            <span
+                                hidden={isLocationTypePhysical}
+                                className="text-red-500"
+                            >
+                                (optional)
+                            </span>
+                        </Label>
                         <Input
                             min={1}
                             id="seats"
                             name="seats"
                             type="number"
-                            required
+                            required={isLocationTypePhysical}
                         />
                     </div>
 
@@ -221,9 +268,19 @@ export default function AddEventPage() {
                     <div className="flex flex-col space-y-2">
                         <Label htmlFor="link">
                             Event Link{" "}
-                            <span className="text-red-500">(optional)</span>
+                            <span
+                                hidden={!isLocationTypePhysical}
+                                className="text-red-500"
+                            >
+                                (optional)
+                            </span>
                         </Label>
-                        <Input id="link" name="link" type="url" />
+                        <Input
+                            id="link"
+                            name="link"
+                            type="url"
+                            required={!isLocationTypePhysical}
+                        />
                     </div>
 
                     {/* Date */}
@@ -240,8 +297,21 @@ export default function AddEventPage() {
 
                     {/* Time */}
                     <div className="flex flex-col space-y-2">
-                        <Label htmlFor="time">Time</Label>
-                        <Input id="time" name="time" type="time" required />
+                        <Label htmlFor="time">
+                            Time{" "}
+                            <span
+                                hidden={isLocationTypePhysical}
+                                className="text-red-500"
+                            >
+                                (optional)
+                            </span>
+                        </Label>
+                        <Input
+                            id="time"
+                            name="time"
+                            type="time"
+                            required={isLocationTypePhysical}
+                        />
                     </div>
 
                     {/* Deadline */}
