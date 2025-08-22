@@ -54,7 +54,6 @@ const RegistrationModal = ({ event, setOpen }) => {
     const address = form.address?.value;
     const targetTechnology = form.targetTechnology?.value;
 
-    // Very light client-side check for TrxID (8–16 chars, letters/numbers)
     if (!transactionId || !/^[A-Za-z0-9]{8,16}$/.test(transactionId.trim())) {
       toast.error("সঠিক ট্রান্স্যাকশন আইডি দিন (৮–১৬ অক্ষর/সংখ্যা)।");
       setLoading(false);
@@ -80,9 +79,9 @@ const RegistrationModal = ({ event, setOpen }) => {
       setOpen(false);
       form.reset();
     } catch (error) {
-      console.log("Error on registration modal", error);
-      if (error?.response?.data?.message) {
-        toast.error(error.response.data.message);
+      console.log("Error on registration modal", error.response);
+      if (error.response.status === 409) {
+        toast.error("এই ইভেন্টটি ইতিমধ্যেই বুক করা আছে");
       } else {
         toast.error("কিছু সমস্যা হয়েছে, পরে আবার চেষ্টা করুন।");
       }
