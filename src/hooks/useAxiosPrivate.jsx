@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 import { useRouter } from "next/navigation";
 
 const AxiosPrivate = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true,
 });
 
