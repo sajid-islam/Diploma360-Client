@@ -26,15 +26,52 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
 import { toast } from "sonner";
 import moment from "moment";
+import Swal from "sweetalert2";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const PaymentRequestPage = () => {
+  const AxiosPrivate = useAxiosPrivate();
+  const { data = [], error, isLoading, refetch } = useGetPaymentRequestsQuery();
+
   const handleCopyText = async (value) => {
     await navigator.clipboard.writeText(value);
     toast.success(`${value} TrxId Copied!`);
   };
+
+  const handleAcceptPayment = async (id, eventName, name) => {
+    Swal.fire({
+      html: `
+          <div class="text-left">
+            <div class="font-semibold text-xl mb-1">${eventName} -${name}</div>
+            <div class="text-sm">Do you want to proceed with this payment? This action cannot be undone.</div>
+          </div>
+  `,
+      showCancelButton: true,
+      confirmButtonText: "Accept",
+      cancelButtonText: "Cancel",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: "bg-black text-sm text-white px-4 py-1 rounded",
+        cancelButton: "bg-white text-sm text-black border border-gray-300 px-4 py-1 rounded",
+        popup: "shadow-lg rounded-lg p-6 text-center",
+        actions: "grid justify-end gap-2 !important",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await AxiosPrivate.put(`/api/events/payment/${id}/accept-payment`);
+          toast.success("Payment accept successfully");
+          refetch();
+        } catch (error) {
+          console.log("Error accepting payment");
+          toast.error("Something went wrong");
+        }
+      }
+    });
+  };
+
   const columnHelper = createColumnHelper();
 
   const columns = [
@@ -87,7 +124,16 @@ const PaymentRequestPage = () => {
     columnHelper.accessor("accept", {
       header: () => "Action",
       cell: ({ row }) => (
-        <button className="bg-custom-secondary hover:bg-custom-secondary text-black hover:cursor-pointer px-2 rounded font-medium">
+        <button
+          onClick={() =>
+            handleAcceptPayment(
+              row.original.registrations._id,
+              row.original.eventName,
+              row.original.registrations.name
+            )
+          }
+          className="bg-custom-secondary hover:bg-custom-secondary text-black hover:cursor-pointer px-2 rounded font-medium"
+        >
           Accept
         </button>
       ),
@@ -101,7 +147,6 @@ const PaymentRequestPage = () => {
       ),
     }),
   ];
-  const { data = [], error, isLoading } = useGetPaymentRequestsQuery();
 
   const table = useReactTable({
     data,
@@ -109,7 +154,6 @@ const PaymentRequestPage = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  console.log(data);
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
