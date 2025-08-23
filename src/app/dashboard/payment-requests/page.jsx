@@ -71,6 +71,37 @@ const PaymentRequestPage = () => {
       }
     });
   };
+  const handleRejectPayment = async (id, eventName, name) => {
+    Swal.fire({
+      html: `
+          <div class="text-left">
+            <div class="font-semibold text-xl mb-1">${eventName} -${name}</div>
+            <div class="text-sm">Do you want to reject this payment? This action cannot be undone.</div>
+          </div>
+  `,
+      showCancelButton: true,
+      confirmButtonText: "Reject",
+      cancelButtonText: "Cancel",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: "bg-red-500 text-sm text-white px-4 py-1 rounded",
+        cancelButton: "bg-white text-sm text-black border border-gray-300 px-4 py-1 rounded",
+        popup: "shadow-lg rounded-lg p-6 text-center",
+        actions: "grid justify-end gap-2 !important",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await AxiosPrivate.put(`/api/events/payment/${id}/reject-payment`);
+          toast.success("Payment rejected successfully");
+          refetch();
+        } catch (error) {
+          console.log("Error rejecting payment");
+          toast.error("Something went wrong");
+        }
+      }
+    });
+  };
 
   const columnHelper = createColumnHelper();
 
@@ -121,10 +152,15 @@ const PaymentRequestPage = () => {
       header: () => "Pay Date",
       cell: (info) => moment(info.getValue()).format("Do MMM YY, h:mm A"),
     }),
+    columnHelper.accessor("registrations.paymentStatus", {
+      header: () => "Status",
+      cell: (info) => info.getValue(),
+    }),
     columnHelper.accessor("accept", {
       header: () => "Action",
       cell: ({ row }) => (
         <button
+          disabled={row.original.registrations.paymentStatus === "accepted"}
           onClick={() =>
             handleAcceptPayment(
               row.original.registrations._id,
@@ -132,7 +168,7 @@ const PaymentRequestPage = () => {
               row.original.registrations.name
             )
           }
-          className="bg-custom-secondary hover:bg-custom-secondary text-black hover:cursor-pointer px-2 rounded font-medium"
+          className="bg-custom-secondary hover:bg-custom-secondary disabled:bg-custom-neutral-dark disabled:cursor-not-allowed text-black hover:cursor-pointer px-2 rounded font-medium"
         >
           Accept
         </button>
@@ -141,7 +177,17 @@ const PaymentRequestPage = () => {
     columnHelper.accessor("reject", {
       header: () => "Action",
       cell: ({ row }) => (
-        <button className="bg-red-500 hover:bg-red-400 text-black hover:cursor-pointer px-2 rounded font-medium">
+        <button
+          disabled={row.original.registrations.paymentStatus === "rejected"}
+          onClick={() =>
+            handleRejectPayment(
+              row.original.registrations._id,
+              row.original.eventName,
+              row.original.registrations.name
+            )
+          }
+          className="bg-red-500 hover:bg-red-400 disabled:bg-custom-neutral-dark disabled:cursor-not-allowed text-black hover:cursor-pointer px-2 rounded font-medium"
+        >
           Reject
         </button>
       ),
