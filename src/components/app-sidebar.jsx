@@ -42,7 +42,7 @@ const data = {
     },
     {
       title: "Payment Request",
-      url: "/dashboard/payment-request",
+      url: "/dashboard/payment-requests",
       icon: <MdOutlinePayment />,
     },
     {
