@@ -18,7 +18,7 @@ export default function SignUpPage() {
   useAuthRedirect();
 
   const AxiosPublic = useAxiosPublic();
-  const { createUser, loading, authLoading } = useAuth();
+  const { createUser, emailVerification, authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
@@ -36,7 +36,7 @@ export default function SignUpPage() {
         displayName: name,
         photoURL: `https://api.dicebear.com/9.x/glass/svg?seed=${result.user.uid}`,
       });
-      await sendEmailVerification(result.user);
+      await sendEmailVerification(result.user).then(() => console.log("Email verification sent"));
 
       const userData = {
         name: result.user.displayName,
@@ -44,9 +44,9 @@ export default function SignUpPage() {
         email: result.user.email,
         uid: result.user.uid,
       };
-      const response = await AxiosPublic.post("/api/user", userData);
-      const data = response.data;
-      console.log(data);
+
+      await AxiosPublic.post("/api/user", userData);
+
       router.push(redirect);
       e.target.reset();
     } catch (error) {
