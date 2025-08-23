@@ -9,6 +9,6 @@ export const store = configureStore({
     [eventApi.reducerPath]: eventApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(eventApi.middleware),
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(paymentApi.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(eventApi.middleware).concat(paymentApi.middleware),
 });
