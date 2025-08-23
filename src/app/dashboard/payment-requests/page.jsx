@@ -1,3 +1,4 @@
+"use client";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,8 +9,11 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useGetPaymentRequestsQuery } from "@/redux/payment/paymentSlice";
 
-const PaymentRequestPate = () => {
+const PaymentRequestPage = () => {
+  const { data, error, isLoading } = useGetPaymentRequestsQuery();
+  console.log(data);
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -41,4 +45,4 @@ const PaymentRequestPate = () => {
   );
 };
 
-export default PaymentRequestPate;
+export default PaymentRequestPage;
