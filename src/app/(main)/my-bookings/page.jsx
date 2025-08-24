@@ -1,48 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import useAuth from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
 import ReviewModal from "@/components/ReviewModal/ReviewModal";
-import { toast } from "sonner";
 import { useGetMyBookingsQuery } from "@/redux/event/eventSlice";
 import Loader from "@/components/Loader/Loader";
+import moment from "moment";
+import { toast } from "sonner";
 
 const MyEventPage = () => {
-  const AxiosPrivate = useAxiosPrivate();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [selectedDialogId, setSelectedDialogId] = useState(null);
 
-  const handleOpenModal = (eventId) => {
+  const handleOpenModal = (eventId, paymentStatus) => {
+    if (paymentStatus !== "accepted") {
+      toast.error("You are not allowed to review this event");
+      return;
+    }
     setSelectedDialogId(eventId);
     setOpen(true);
   };
 
-  const { data: bookings = [], error, isLoading, refetch } = useGetMyBookingsQuery(user?.email);
-
-  const handleCancel = async (id) => {
-    if (!confirm("আপনি কি সত্যিই এই ইভেন্ট বাতিল করতে চান?")) return;
-
-    try {
-      const response = await AxiosPrivate.delete(`/api/events/${id}/registration`);
-
-      if (response.data.success) {
-        // Remove canceled booking from state
-        refetch();
-        toast.success("বুকিং সফলভাবে বাতিল হয়েছে");
-      } else {
-        toast.error(response.data.message || "কিছু ভুল হয়েছে");
-      }
-    } catch (error) {
-      console.error("Error cancelling booking:", error);
-      toast.error("কিছু ভুল হয়েছে। পুনরায় চেষ্টা করুন।");
-    }
-  };
+  const { data: bookings = [], error, isLoading } = useGetMyBookingsQuery(user?.email);
 
   return (
     <ProtectedRoute>
@@ -61,29 +53,56 @@ const MyEventPage = () => {
                 <TableRow>
                   <TableHead className="min-w-[200px]">ইভেন্টের নাম</TableHead>
                   <TableHead className="min-w-[120px]">তারিখ</TableHead>
-                  <TableHead className="min-w-[120px]">টিকিট</TableHead>
-                  <TableHead className="text-right min-w-[120px]">অ্যাকশন</TableHead>
+                  <TableHead className="min-w-[120px]">শেষ তারিখ</TableHead>
+                  <TableHead className="min-w-[120px]">স্থান</TableHead>
+                  <TableHead className="min-w-[120px]">পেমেন্ট স্ট্যাটাস</TableHead>
                   <TableHead className="text-right min-w-[120px]">অ্যাকশন</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {bookings.map((booking) => (
-                  <TableRow key={booking._id}>
+                  <TableRow
+                    key={booking._id}
+                    className={`${
+                      booking.registrations[0].paymentStatus === "rejected" &&
+                      "bg-red-400 hover:bg-red-500"
+                    }`}
+                  >
+                    {/* Event Name */}
                     <TableCell>{booking.eventName}</TableCell>
-                    <TableCell>{new Date(booking.date).toLocaleDateString()}</TableCell>
-                    <TableCell>{booking.registrations[0].numberOfSeats}</TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="destructive" size="sm" onClick={() => handleCancel(booking._id)}>
-                        বাতিল করুন
-                      </Button>
+
+                    {/*Event Date and Time */}
+                    <TableCell>
+                      {moment(
+                        booking.time ? `${booking.date} ${booking.time}` : booking.date,
+                        `${booking.time ? "YYYY-MM-DD, HH:mm" : "YYYY-MM-DD"}`
+                      ).format("Do MMM YY, hh:mm A")}
                     </TableCell>
+
+                    {/* Event Deadline */}
+                    <TableCell>{moment(booking.deadline).format("Do MMM, YY")}</TableCell>
+
+                    {/* Location */}
+                    <TableCell>
+                      {booking.location === "online" ? "অনলাইন" : booking.location}
+                    </TableCell>
+                    <TableCell>
+                      {booking.registrations[0].paymentStatus === "accepted" && "অ্যাকসেপ্টেড"}
+                      {booking.registrations[0].paymentStatus === "rejected" && "রিজেক্টেড"}
+                      {booking.registrations[0].paymentStatus === "pending" && "পেন্ডিং"}
+                    </TableCell>
+
+                    {/* Review dialog button */}
                     <TableCell className="text-right">
                       <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogTrigger asChild>
-                          <Button onClick={() => handleOpenModal(booking._id)} size="sm">
-                            রিভিউ দিন
-                          </Button>
-                        </DialogTrigger>
+                        <Button
+                          onClick={() =>
+                            handleOpenModal(booking._id, booking.registrations[0].paymentStatus)
+                          }
+                          size="sm"
+                        >
+                          রিভিউ দিন
+                        </Button>
                         <ReviewModal id={selectedDialogId} setOpen={setOpen} />
                       </Dialog>
                     </TableCell>
