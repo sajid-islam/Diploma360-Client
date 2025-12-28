@@ -46,12 +46,13 @@ export function AppSidebar({ ...props }) {
               title: "Registration",
               url: "/dashboard/registration",
             },
+          ]
+        : [
             {
               title: "Students",
               url: "/dashboard/students",
             },
-          ]
-        : [],
+          ],
     },
 
     // PAYMENT REQUEST (Organizer only)
@@ -66,6 +67,10 @@ export function AppSidebar({ ...props }) {
       title: "Events",
       url: "/dashboard/events",
       icon: <MdOutlineEventNote />,
+      items: (isOrganizer || isSuperAdmin) && [
+        { title: "Add Event", url: "/dashboard/add-event" },
+        { title: "My Events", url: "/dashboard/my-events" },
+      ],
     },
 
     // REVIEWS (Organizer + Super Admin)
