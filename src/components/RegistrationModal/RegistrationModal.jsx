@@ -1,12 +1,23 @@
-import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
+import {
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import moment from "moment";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Button } from "../ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import BkashPaymentSection from "./BkashPaymentSection";
-import moment from "moment";
 
 const technologies = [
   "Computer Technology",
@@ -54,10 +65,12 @@ const RegistrationModal = ({ event, setOpen }) => {
     const address = form.address?.value;
     const targetTechnology = form.targetTechnology?.value;
 
-    if (!transactionId || !/^[A-Za-z0-9]{8,16}$/.test(transactionId.trim())) {
-      toast.error("সঠিক ট্রান্স্যাকশন আইডি দিন (৮–১৬ অক্ষর/সংখ্যা)।");
-      setLoading(false);
-      return;
+    if (event.fee > 0) {
+      if (!transactionId || !/^[A-Za-z0-9]{8,16}$/.test(transactionId.trim())) {
+        toast.error("সঠিক ট্রান্স্যাকশন আইডি দিন (৮–১৬ অক্ষর/সংখ্যা)।");
+        setLoading(false);
+        return;
+      }
     }
 
     try {
@@ -69,11 +82,17 @@ const RegistrationModal = ({ event, setOpen }) => {
         sscYear,
         address,
         targetTechnology,
-        paymentMethod: "bkash",
-        transactionId: transactionId.trim().toUpperCase(),
       };
 
-      await AxiosPrivate.post(`/api/events/${event._id}/registration`, registrationData);
+      if (event.fee > 0) {
+        registrationData.paymentMethod = "bkash";
+        registrationData.transactionId = transactionId.trim().toUpperCase();
+      }
+
+      await AxiosPrivate.post(
+        `/api/events/${event._id}/registration`,
+        registrationData
+      );
 
       toast.success("পেমেন্ট ইনফো সাবমিট হয়েছে 🎉 আমরা যাচাই করছি।");
       setOpen(false);
@@ -94,7 +113,8 @@ const RegistrationModal = ({ event, setOpen }) => {
     <DialogContent className="sm:max-w-lg h-[90vh] overflow-auto">
       <DialogHeader>
         <DialogTitle className="mt-4">
-          <span className="text-custom-secondary-dark">{event.eventName}</span> জন্য রেজিস্ট্রেশন করুন
+          <span className="text-custom-secondary-dark">{event.eventName}</span>{" "}
+          জন্য রেজিস্ট্রেশন করুন
         </DialogTitle>
       </DialogHeader>
 
@@ -138,7 +158,9 @@ const RegistrationModal = ({ event, setOpen }) => {
 
         {/* Diploma Study Option */}
         <div>
-          <label className="block text-sm font-medium">আপনি কি ডিপ্লোমায় পড়াশোনা করছেন নাকি করতে চান?</label>
+          <label className="block text-sm font-medium">
+            আপনি কি ডিপ্লোমায় পড়াশোনা করছেন নাকি করতে চান?
+          </label>
           <select
             name="studyOption"
             value={studyOption}
@@ -156,7 +178,9 @@ const RegistrationModal = ({ event, setOpen }) => {
         {studyOption === "want-to-study" && (
           <>
             <div>
-              <label className="block text-sm font-medium">এসএসসি পাশের বছর</label>
+              <label className="block text-sm font-medium">
+                এসএসসি পাশের বছর
+              </label>
               <input
                 type="number"
                 name="sscYear"
@@ -176,8 +200,15 @@ const RegistrationModal = ({ event, setOpen }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">কোন টেকনোলজি পড়তে চান?</label>
-              <Select id="targetTechnology" name="targetTechnology" required className="w-full">
+              <label className="block text-sm font-medium">
+                কোন টেকনোলজি পড়তে চান?
+              </label>
+              <Select
+                id="targetTechnology"
+                name="targetTechnology"
+                required
+                className="w-full"
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select your technology" />
                 </SelectTrigger>
@@ -196,15 +227,24 @@ const RegistrationModal = ({ event, setOpen }) => {
         )}
 
         {/* --- bKash Themed Payment Section --- */}
-        <BkashPaymentSection event={event} />
+        {event.fee > 0 && <BkashPaymentSection event={event} />}
 
         {/* Payment Button (replaces Submit) */}
-        <Button disabled={loading} type="submit" className="w-full bg-[#E2136E] hover:bg-[#c80f5f]">
-          {loading ? "প্রসেস হচ্ছে..." : "পেমেন্ট তথ্য সাবমিট করুন"}
+        <Button
+          disabled={loading}
+          type="submit"
+          className="w-full bg-[#E2136E] hover:bg-[#c80f5f]"
+        >
+          {loading
+            ? "প্রসেস হচ্ছে..."
+            : event.fee > 0
+            ? "পেমেন্ট তথ্য সাবমিট করুন"
+            : "ফ্রি রেজিস্ট্রেশন করুন"}
         </Button>
 
         <p className="text-[11px] text-gray-500 text-center">
-          পেমেন্ট ভেরিফাই হতে কিছু সময় লাগতে পারে। সমস্যায় পড়লে আয়োজকের সাথে যোগাযোগ করুন।
+          পেমেন্ট ভেরিফাই হতে কিছু সময় লাগতে পারে। সমস্যায় পড়লে আয়োজকের সাথে
+          যোগাযোগ করুন।
         </p>
       </form>
     </DialogContent>

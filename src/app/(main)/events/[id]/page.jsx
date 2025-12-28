@@ -1,16 +1,16 @@
 "use client";
 
+import Loader from "@/components/Loader/Loader";
 import RegistrationModal from "@/components/RegistrationModal/RegistrationModal";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import useAuth from "@/hooks/useAuth";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
+import { useGetMyBookingsQuery } from "@/redux/event/eventSlice";
+import moment from "moment";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import useAuth from "@/hooks/useAuth";
-import Link from "next/link";
-import moment from "moment";
-import { useGetMyBookingsQuery } from "@/redux/event/eventSlice";
-import Loader from "@/components/Loader/Loader";
 
 export default function EventDetailsPage() {
   const { id } = useParams();
@@ -19,9 +19,12 @@ export default function EventDetailsPage() {
   const AxiosPublic = useAxiosPublic();
   const [open, setOpen] = useState(false);
 
-  const { data: bookings = [], isLoading } = useGetMyBookingsQuery(user?.email, {
-    skip: !user?.email,
-  });
+  const { data: bookings = [], isLoading } = useGetMyBookingsQuery(
+    user?.email,
+    {
+      skip: !user?.email,
+    }
+  );
 
   const isBooked = bookings.some((booking) => booking._id === id);
 
@@ -47,7 +50,11 @@ export default function EventDetailsPage() {
       {/* Event Cover Image */}
       {event.eventImage && (
         <div className="relative w-full h-72 sm:h-96 md:h-[420px] rounded-xl overflow-hidden shadow-md">
-          <img src={event.eventImage} alt={event.name} className="w-full h-full object-cover" />
+          <img
+            src={event.eventImage}
+            alt={event.name}
+            className="w-full h-full object-cover"
+          />
         </div>
       )}
 
@@ -55,7 +62,9 @@ export default function EventDetailsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-6 gap-4">
         <div>
           <h1 className="text-3xl sm:text-4xl font-bold">{event.name}</h1>
-          <p className="text-gray-600 mt-2">আয়োজক {event.organizer || "ডিপ্লোমা ৩৬০"}</p>
+          <p className="text-gray-600 mt-2">
+            আয়োজক {event.organizer || "ডিপ্লোমা ৩৬০"}
+          </p>
         </div>
         <div className="text-right">
           <p className="text-lg font-semibold text-gray-800">
@@ -64,13 +73,25 @@ export default function EventDetailsPage() {
           {!user ? (
             <Link href={`/sign-in?redirect=/events/${id}`}>
               {" "}
-              <Button className="mt-2">টিকিট কিনুন</Button>
+              <Button>
+                {Boolean(event.fee === 0) ? "ফ্রি রেজিস্ট্রেশন" : "টিকিট কিনুন"}
+              </Button>
             </Link>
           ) : (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button disabled={isBooked || isLoading} className="mt-2">
-                  {isLoading ? <Loader /> : isBooked ? "ইতিমধ্যে বুক করা হয়েছে" : " টিকিট কিনুন"}
+                  {isLoading ? (
+                    <Loader />
+                  ) : isBooked ? (
+                    "ইতিমধ্যে বুক করা হয়েছে"
+                  ) : (
+                    <>
+                      {Boolean(event.fee === 0)
+                        ? "ফ্রি রেজিস্ট্রেশন"
+                        : "টিকিট কিনুন"}
+                    </>
+                  )}
                 </Button>
               </DialogTrigger>
               <RegistrationModal event={event} setOpen={setOpen} />
@@ -96,15 +117,18 @@ export default function EventDetailsPage() {
         </div>
         <div>
           <p>
-            <span className="font-semibold">📂 ক্যাটেগরি:</span> {event.category}
+            <span className="font-semibold">📂 ক্যাটেগরি:</span>{" "}
+            {event.category}
           </p>
           <p>
-            <span className="font-semibold">🎟 মোট সিটস :</span> {event.numberOfSeats || "Unlimited"}
+            <span className="font-semibold">🎟 মোট সিটস :</span>{" "}
+            {event.numberOfSeats || "Unlimited"}
           </p>
         </div>
         <div>
           <p>
-            <span className="font-semibold">💰 রেজিস্ট্রেশন ফি:</span> {event.fee}TK
+            <span className="font-semibold">💰 রেজিস্ট্রেশন ফি:</span>{" "}
+            {event.fee}TK
           </p>
           <p>
             <span className="font-semibold">⏳ শেষ তারিখ:</span>{" "}

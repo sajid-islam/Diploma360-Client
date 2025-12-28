@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import Loader from "@/components/Loader/Loader";
+import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
+import ReviewModal from "@/components/ReviewModal/ReviewModal";
+import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -10,14 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
-import ProtectedRoute from "@/components/ProtectedRoute/ProtectedRoute";
-import ReviewModal from "@/components/ReviewModal/ReviewModal";
 import { useGetMyBookingsQuery } from "@/redux/event/eventSlice";
-import Loader from "@/components/Loader/Loader";
 import moment from "moment";
+import { useState } from "react";
 import { toast } from "sonner";
 
 const MyEventPage = () => {
@@ -26,7 +26,7 @@ const MyEventPage = () => {
   const [selectedDialogId, setSelectedDialogId] = useState(null);
 
   const handleOpenModal = (eventId, paymentStatus) => {
-    if (paymentStatus !== "accepted") {
+    if (!["accepted", "free"].includes(paymentStatus)) {
       toast.error("You are not allowed to review this event");
       return;
     }
@@ -34,7 +34,11 @@ const MyEventPage = () => {
     setOpen(true);
   };
 
-  const { data: bookings = [], error, isLoading } = useGetMyBookingsQuery(user?.email);
+  const {
+    data: bookings = [],
+    error,
+    isLoading,
+  } = useGetMyBookingsQuery(user?.email);
 
   return (
     <ProtectedRoute>
@@ -55,8 +59,12 @@ const MyEventPage = () => {
                   <TableHead className="min-w-[120px]">তারিখ</TableHead>
                   <TableHead className="min-w-[120px]">শেষ তারিখ</TableHead>
                   <TableHead className="min-w-[120px]">স্থান</TableHead>
-                  <TableHead className="min-w-[120px]">পেমেন্ট স্ট্যাটাস</TableHead>
-                  <TableHead className="text-right min-w-[120px]">অ্যাকশন</TableHead>
+                  <TableHead className="min-w-[120px]">
+                    পেমেন্ট স্ট্যাটাস
+                  </TableHead>
+                  <TableHead className="text-right min-w-[120px]">
+                    অ্যাকশন
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -74,22 +82,33 @@ const MyEventPage = () => {
                     {/*Event Date and Time */}
                     <TableCell>
                       {moment(
-                        booking.time ? `${booking.date} ${booking.time}` : booking.date,
+                        booking.time
+                          ? `${booking.date} ${booking.time}`
+                          : booking.date,
                         `${booking.time ? "YYYY-MM-DD, HH:mm" : "YYYY-MM-DD"}`
                       ).format("Do MMM YY, hh:mm A")}
                     </TableCell>
 
                     {/* Event Deadline */}
-                    <TableCell>{moment(booking.deadline).format("Do MMM, YY")}</TableCell>
+                    <TableCell>
+                      {moment(booking.deadline).format("Do MMM, YY")}
+                    </TableCell>
 
                     {/* Location */}
                     <TableCell>
-                      {booking.location === "online" ? "অনলাইন" : booking.location}
+                      {booking.location === "online"
+                        ? "অনলাইন"
+                        : booking.location}
                     </TableCell>
                     <TableCell>
-                      {booking.registrations[0].paymentStatus === "accepted" && "অ্যাকসেপ্টেড"}
-                      {booking.registrations[0].paymentStatus === "rejected" && "রিজেক্টেড"}
-                      {booking.registrations[0].paymentStatus === "pending" && "পেন্ডিং"}
+                      {booking.registrations[0].paymentStatus === "free" &&
+                        "ফ্রি"}
+                      {booking.registrations[0].paymentStatus === "accepted" &&
+                        "অ্যাকসেপ্টেড"}
+                      {booking.registrations[0].paymentStatus === "rejected" &&
+                        "রিজেক্টেড"}
+                      {booking.registrations[0].paymentStatus === "pending" &&
+                        "পেন্ডিং"}
                     </TableCell>
 
                     {/* Review dialog button */}
@@ -97,7 +116,10 @@ const MyEventPage = () => {
                       <Dialog open={open} onOpenChange={setOpen}>
                         <Button
                           onClick={() =>
-                            handleOpenModal(booking._id, booking.registrations[0].paymentStatus)
+                            handleOpenModal(
+                              booking._id,
+                              booking.registrations[0].paymentStatus
+                            )
                           }
                           size="sm"
                         >
