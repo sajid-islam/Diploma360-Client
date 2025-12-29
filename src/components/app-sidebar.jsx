@@ -18,6 +18,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import useRole from "@/hooks/useRole";
+import { CalendarDays } from "lucide-react";
 
 export function AppSidebar({ ...props }) {
   const { isOrganizer, isStudent, isSuperAdmin } = useRole();
@@ -35,7 +36,7 @@ export function AppSidebar({ ...props }) {
   };
   const navMain = [
     // DASHBOARD (Organizer + Super Admin)
-    (isOrganizer || isSuperAdmin) && {
+    (isOrganizer || isSuperAdmin || isStudent) && {
       title: "Dashboard",
       url: "/dashboard",
       icon: <LuLayoutDashboard />,
@@ -47,12 +48,14 @@ export function AppSidebar({ ...props }) {
               url: "/dashboard/registration",
             },
           ]
-        : [
+        : isSuperAdmin
+        ? [
             {
               title: "Students",
               url: "/dashboard/students",
             },
-          ],
+          ]
+        : [],
     },
 
     // PAYMENT REQUEST (Organizer only)
@@ -91,7 +94,7 @@ export function AppSidebar({ ...props }) {
     isStudent && {
       title: "My Bookings",
       url: "/dashboard/my-bookings",
-      icon: <LuTicketCheck />,
+      icon: <CalendarDays />,
     },
 
     // MY TICKETS (Student only)
