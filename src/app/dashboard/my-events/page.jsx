@@ -139,7 +139,9 @@ const MyEventsPage = () => {
                         <Button
                           size="sm"
                           onClick={() =>
-                            router.push(`/dashboard/events/edit/${event._id}`)
+                            router.push(
+                              `/dashboard/my-events/edit/${event._id}`
+                            )
                           }
                         >
                           Update
