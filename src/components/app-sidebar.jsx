@@ -93,6 +93,13 @@ export function AppSidebar({ ...props }) {
       url: "/dashboard/my-bookings",
       icon: <LuTicketCheck />,
     },
+
+    // MY TICKETS (Student only)
+    isStudent && {
+      title: "My Tickets",
+      url: "/dashboard/my-tickets",
+      icon: <LuTicketCheck />,
+    },
   ].filter(Boolean);
   return (
     <Sidebar collapsible="icon" {...props}>
