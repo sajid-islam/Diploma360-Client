@@ -284,12 +284,6 @@ export default function AddEventPage() {
               <Input id="date" name="date" type="date" min={today} required />
             </div>
 
-            {/* Time */}
-            <div className="flex flex-col space-y-2">
-              <Label htmlFor="time">Time</Label>
-              <Input id="time" name="time" type="time" required />
-            </div>
-
             {/* Deadline */}
             <div className="flex flex-col space-y-2">
               <Label htmlFor="deadline">Deadline</Label>
@@ -300,6 +294,12 @@ export default function AddEventPage() {
                 min={today}
                 required
               />
+            </div>
+
+            {/* Time */}
+            <div className="flex flex-col space-y-2">
+              <Label htmlFor="time">Time</Label>
+              <Input id="time" name="time" type="time" required />
             </div>
           </div>
 

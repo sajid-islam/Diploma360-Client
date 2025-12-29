@@ -27,6 +27,7 @@ import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import Swal from "sweetalert2";
 
 const MyEventsPage = () => {
   const { user } = useAuth();
@@ -56,16 +57,45 @@ const MyEventsPage = () => {
   }, [user]);
 
   // Handle delete
-  const handleDelete = async (eventId) => {
+  const handleDelete = async (event) => {
+    const { _id, eventName } = event;
+
+    const result = await Swal.fire({
+      html: `
+      <div class="text-left">
+        <div class="font-semibold text-xl mb-2">${eventName}</div>
+        <div class="text-sm text-gray-600">
+          আপনি কি এই ইভেন্টটি মুছে ফেলতে চান? <br/>
+          <b>এই কাজটি আর ফেরত নেওয়া যাবে না।</b>
+        </div>
+      </div>
+    `,
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded",
+        cancelButton:
+          "bg-gray-100 hover:bg-gray-200 text-black px-4 py-2 rounded",
+        actions: "flex justify-end gap-2 mt-4",
+        popup: "rounded-xl p-6",
+      },
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       setLoading(true);
-      await AxiosPrivate.delete(`/api/events/${eventId}`);
-      setEvents(events.filter((ev) => ev._id !== eventId));
-      toast.success("ইভেন্ট সফলভাবে মুছে ফেলা হয়েছে।");
-      setDeleteDialogOpen(false);
+      await AxiosPrivate.delete(`/api/events/${_id}`);
+      setEvents((prev) => prev.filter((ev) => ev._id !== _id));
+      toast.success("ইভেন্ট সফলভাবে মুছে ফেলা হয়েছে ✅");
     } catch (error) {
-      console.error("Error deleting event", error);
-      toast.error("ইভেন্ট মুছে ফেলতে সমস্যা হয়েছে।");
+      console.error("Delete failed", error);
+      toast.error(
+        error?.response?.data?.message || "ইভেন্ট মুছতে সমস্যা হয়েছে ❌"
+      );
     } finally {
       setLoading(false);
     }
@@ -149,10 +179,7 @@ const MyEventsPage = () => {
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => {
-                            setSelectedEvent(event);
-                            setDeleteDialogOpen(true);
-                          }}
+                          onClick={() => handleDelete(event)}
                         >
                           Delete
                         </Button>
