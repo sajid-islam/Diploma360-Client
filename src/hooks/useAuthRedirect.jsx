@@ -7,7 +7,7 @@ const useAuthRedirect = () => {
     const router = useRouter();
     const { user } = useAuth();
     const searchParams = useSearchParams();
-    const redirect = searchParams.get("redirect" || "/");
+    const redirect = searchParams.get("redirect") || "/";
 
     useEffect(() => {
         if (user) {

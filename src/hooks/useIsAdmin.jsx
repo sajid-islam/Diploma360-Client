@@ -4,29 +4,29 @@ import useAxiosPrivate from "./useAxiosPrivate";
 import useAuth from "./useAuth";
 
 const useIsAdmin = () => {
-    const [isAdmin, setIsAdmin] = useState(false);
-    const { loading, user } = useAuth();
-    console.log(isAdmin);
-    const AxiosPrivate = useAxiosPrivate();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { loading, user } = useAuth();
 
-    useEffect(() => {
-        if (loading || !user) return;
-        const checkAdmin = async () => {
-            try {
-                const res = await AxiosPrivate.get("/api/user/is-admin");
+  const AxiosPrivate = useAxiosPrivate();
 
-                setIsAdmin(res.data.isAdmin);
-            } catch (error) {
-                console.error("Admin check failed:", error);
-                setIsAdmin(false);
-            }
-        };
+  useEffect(() => {
+    if (loading || !user) return;
+    const checkAdmin = async () => {
+      try {
+        const res = await AxiosPrivate.get("/api/user/is-admin");
 
-        const timer = setTimeout(checkAdmin, 2000);
-        return () => clearTimeout(timer);
-    }, [loading, AxiosPrivate, user]);
+        setIsAdmin(res.data.isAdmin);
+      } catch (error) {
+        console.error("Admin check failed:", error);
+        setIsAdmin(false);
+      }
+    };
 
-    return { isAdmin };
+    const timer = setTimeout(checkAdmin, 2000);
+    return () => clearTimeout(timer);
+  }, [loading, AxiosPrivate, user]);
+
+  return { isAdmin };
 };
 
 export default useIsAdmin;

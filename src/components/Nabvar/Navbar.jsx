@@ -29,7 +29,7 @@ const Navbar = () => {
                             <div className="flex items-center gap-1">
                                 <Button size="sm">
                                     {" "}
-                                    <Link href="sign-in">লগ ইন</Link>
+                                    <Link href="/sign-in">লগ ইন</Link>
                                 </Button>
                                 <Button
                                     size="sm"
@@ -37,12 +37,12 @@ const Navbar = () => {
                                 >
                                     <Link href="/sign-up">সাইন আপ</Link>
                                 </Button>
-                                <div>
-                                    <NavbarToggleBtn />
-                                </div>
                             </div>
                         </>
                     )}
+                </div>
+                <div>
+                    <NavbarToggleBtn />
                 </div>
             </div>
         </div>
