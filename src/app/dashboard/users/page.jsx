@@ -48,7 +48,7 @@ const UsersPage = () => {
       setUsers(res.data.users);
     } catch (err) {
       console.error(err);
-      toast.error("ব্যবহারকারীদের লোড করতে সমস্যা হয়েছে।");
+      toast.error("Failed to load users.");
     } finally {
       setLoading(false);
     }
@@ -71,7 +71,7 @@ const UsersPage = () => {
       toast.success("Role updated successfully");
     } catch (err) {
       console.error(err);
-      toast.error("Role update failed");
+      toast.error("Failed to update role");
     } finally {
       setUpdatingUser(null);
     }
@@ -97,7 +97,7 @@ const UsersPage = () => {
       </header>
 
       <div className="p-4 md:p-8">
-        <h2 className="text-2xl font-semibold mb-4">সমস্ত ব্যবহারকারী</h2>
+        <h2 className="text-2xl font-semibold mb-4">All Users</h2>
 
         {loading ? (
           <div className="flex justify-center items-center h-40">
@@ -106,19 +106,17 @@ const UsersPage = () => {
         ) : (
           <div className="overflow-x-auto">
             <Table className="min-w-full border rounded-lg">
-              <TableCaption>
-                সুপার অ্যাডমিনের জন্য ব্যবহারকারীর তালিকা
-              </TableCaption>
+              <TableCaption>List of all users for Super Admin</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="min-w-[200px]">নাম</TableHead>
-                  <TableHead className="min-w-[250px]">ইমেইল</TableHead>
-                  <TableHead className="min-w-[150px]">রোল</TableHead>
+                  <TableHead className="min-w-[200px]">Name</TableHead>
+                  <TableHead className="min-w-[250px]">Email</TableHead>
+                  <TableHead className="min-w-[150px]">Role</TableHead>
                   <TableHead className="min-w-[150px]">
-                    নিবন্ধনের তারিখ
+                    Registration Date
                   </TableHead>
                   <TableHead className="text-right min-w-[180px]">
-                    অ্যাকশন
+                    Action
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -126,7 +124,7 @@ const UsersPage = () => {
                 {users.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-4">
-                      কোনো ব্যবহারকারী পাওয়া যায়নি।
+                      No users found.
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -140,6 +138,7 @@ const UsersPage = () => {
                       </TableCell>
 
                       <TableCell className="text-right">
+                        {/* Prevent Super Admin from changing their own role */}
                         {user._id !== currentUserId &&
                           user.role !== "super_admin" && (
                             <Select
