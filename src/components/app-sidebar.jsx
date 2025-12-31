@@ -51,8 +51,8 @@ export function AppSidebar({ ...props }) {
         : isSuperAdmin
         ? [
             {
-              title: "Students",
-              url: "/dashboard/students",
+              title: "Users",
+              url: "/dashboard/users",
             },
           ]
         : [],

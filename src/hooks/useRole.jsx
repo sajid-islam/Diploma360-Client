@@ -7,6 +7,7 @@ export default function useRole() {
   const axiosPrivate = useAxiosPrivate();
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState("");
 
   useEffect(() => {
     let mounted = true;
@@ -14,7 +15,10 @@ export default function useRole() {
     const fetchRole = async () => {
       try {
         const res = await axiosPrivate.get("/api/user/me");
-        if (mounted) setRole(res.data.role);
+        if (mounted) {
+          setRole(res.data.role);
+          setCurrentUserId(res.data._id);
+        }
       } catch (error) {
         if (mounted) setRole(null);
       } finally {
@@ -35,5 +39,6 @@ export default function useRole() {
     isStudent: role === "student",
     isOrganizer: role === "organizer",
     isSuperAdmin: role === "super_admin",
+    currentUserId,
   };
 }
