@@ -36,8 +36,6 @@ const MyEventsPage = () => {
 
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Fetch events created by organizer / super_admin
   useEffect(() => {
@@ -48,7 +46,7 @@ const MyEventsPage = () => {
         setEvents(response.data);
       } catch (error) {
         console.error("Error fetching events", error);
-        toast.error("ইভেন্ট লোড করতে সমস্যা হয়েছে।");
+        toast.error("Failed to load events.");
       } finally {
         setLoading(false);
       }
@@ -56,20 +54,20 @@ const MyEventsPage = () => {
     if (user?.email) fetchEvents();
   }, [user]);
 
-  // Handle delete
+  // Handle delete with confirmation
   const handleDelete = async (event) => {
     const { _id, eventName } = event;
 
     const result = await Swal.fire({
       html: `
-      <div class="text-left">
-        <div class="font-semibold text-xl mb-2">${eventName}</div>
-        <div class="text-sm text-gray-600">
-          আপনি কি এই ইভেন্টটি মুছে ফেলতে চান? <br/>
-          <b>এই কাজটি আর ফেরত নেওয়া যাবে না।</b>
+        <div class="text-left">
+          <div class="font-semibold text-xl mb-2">${eventName}</div>
+          <div class="text-sm text-gray-600">
+            Are you sure you want to delete this event? <br/>
+            <b>This action cannot be undone.</b>
+          </div>
         </div>
-      </div>
-    `,
+      `,
       showCancelButton: true,
       confirmButtonText: "Delete",
       cancelButtonText: "Cancel",
@@ -90,11 +88,11 @@ const MyEventsPage = () => {
       setLoading(true);
       await AxiosPrivate.delete(`/api/events/${_id}`);
       setEvents((prev) => prev.filter((ev) => ev._id !== _id));
-      toast.success("ইভেন্ট সফলভাবে মুছে ফেলা হয়েছে ✅");
+      toast.success("Event deleted successfully ✅");
     } catch (error) {
       console.error("Delete failed", error);
       toast.error(
-        error?.response?.data?.message || "ইভেন্ট মুছতে সমস্যা হয়েছে ❌"
+        error?.response?.data?.message || "Failed to delete event ❌"
       );
     } finally {
       setLoading(false);
@@ -103,6 +101,7 @@ const MyEventsPage = () => {
 
   return (
     <>
+      {/* Header / Breadcrumb */}
       <header className="flex h-16 items-center gap-2 px-4">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
@@ -120,7 +119,7 @@ const MyEventsPage = () => {
       </header>
 
       <div className="p-4 md:p-8">
-        <h2 className="text-2xl font-semibold mb-4">আমার ইভেন্টগুলি</h2>
+        <h2 className="text-2xl font-semibold mb-4">My Events</h2>
 
         {loading ? (
           <div className="flex justify-center items-center h-40">
@@ -129,16 +128,16 @@ const MyEventsPage = () => {
         ) : (
           <div className="overflow-x-auto">
             <Table className="min-w-full border rounded-lg">
-              <TableCaption>আপনার তৈরি করা ইভেন্টের একটি তালিকা</TableCaption>
+              <TableCaption>List of events you have created</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="min-w-[200px]">ইভেন্টের নাম</TableHead>
-                  <TableHead className="min-w-[120px]">তারিখ</TableHead>
-                  <TableHead className="min-w-[120px]">শেষ তারিখ</TableHead>
-                  <TableHead className="min-w-[120px]">স্থান</TableHead>
-                  <TableHead className="min-w-[120px]">শ্রেণী</TableHead>
+                  <TableHead className="min-w-[200px]">Event Name</TableHead>
+                  <TableHead className="min-w-[120px]">Date</TableHead>
+                  <TableHead className="min-w-[120px]">Deadline</TableHead>
+                  <TableHead className="min-w-[120px]">Location</TableHead>
+                  <TableHead className="min-w-[120px]">Category</TableHead>
                   <TableHead className="text-right min-w-[180px]">
-                    অ্যাকশন
+                    Action
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -146,7 +145,7 @@ const MyEventsPage = () => {
                 {events.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-4">
-                      কোন ইভেন্ট পাওয়া যায়নি।
+                      No events found.
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -161,7 +160,7 @@ const MyEventsPage = () => {
                       </TableCell>
                       <TableCell>
                         {event.location === "online"
-                          ? "অনলাইন"
+                          ? "Online"
                           : event.location}
                       </TableCell>
                       <TableCell>{event.category}</TableCell>

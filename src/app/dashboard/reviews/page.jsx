@@ -35,7 +35,7 @@ export default function ReviewsPage() {
         const res = await AxiosPrivate.get("/api/events/reviews");
         setReviews(res.data);
       } catch (error) {
-        toast.error("রিভিউ লোড করা যায়নি");
+        toast.error("Failed to load reviews");
       } finally {
         setLoading(false);
       }
@@ -63,13 +63,13 @@ export default function ReviewsPage() {
       </header>
 
       <div className="p-4 md:p-8">
-        <h2 className="text-2xl font-semibold mb-4">ইভেন্ট রিভিউসমূহ</h2>
+        <h2 className="text-2xl font-semibold mb-4">Event Reviews</h2>
 
         {loading ? (
           <Loader />
         ) : reviews.length === 0 ? (
           <div className="flex items-center justify-center h-40 rounded-lg border border-dashed text-gray-500">
-            ইভেন্টেএখনো কোনো রিভিউ দেওয়া হয়নি।
+            No reviews have been submitted for events yet.
           </div>
         ) : (
           <Table>
