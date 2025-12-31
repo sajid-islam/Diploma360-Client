@@ -45,7 +45,9 @@ export default function SignInPage() {
       const adminPassword = "123456";
       await login(adminEmail, adminPassword);
 
-      window.location.href = redirect;
+      setTimeout(() => {
+        router.push(redirect);
+      }, 100);
     } catch (error) {
       console.log(error);
       setAuthLoading(false);
