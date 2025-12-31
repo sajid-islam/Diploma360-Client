@@ -1,7 +1,6 @@
 "use client";
 
 import useAuth from "@/hooks/useAuth";
-import useRole from "@/hooks/useRole";
 import { toggleNavbar } from "@/redux/navbar/NavbarSlice";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,7 +11,6 @@ const NavLinks = () => {
   const isOpen = useSelector((state) => state.navbar.isOpen);
   const dispatch = useDispatch();
 
-  const { isStudent } = useRole();
   const { user } = useAuth();
 
   const links = [
