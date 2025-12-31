@@ -44,8 +44,8 @@ export function AppSidebar({ ...props }) {
       items: isOrganizer
         ? [
             {
-              title: "Registration",
-              url: "/dashboard/registration",
+              title: "Registrations",
+              url: "/dashboard/registrations",
             },
           ]
         : isSuperAdmin
