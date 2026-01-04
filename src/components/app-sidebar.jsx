@@ -1,6 +1,6 @@
 "use client";
 
-import { LuLayoutDashboard, LuTicketCheck } from "react-icons/lu";
+import { LuClock8, LuLayoutDashboard, LuTicketCheck } from "react-icons/lu";
 import {
   MdOutlineEventNote,
   MdOutlinePayment,
@@ -102,6 +102,12 @@ export function AppSidebar({ ...props }) {
       title: "My Tickets",
       url: "/dashboard/my-tickets",
       icon: <LuTicketCheck />,
+    },
+    // MY TICKETS (Student only)
+    isStudent && {
+      title: "My Timeline",
+      url: "/dashboard/my-timeline",
+      icon: <LuClock8 />,
     },
   ].filter(Boolean);
   return (
