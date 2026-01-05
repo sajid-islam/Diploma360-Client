@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Diploma360 – Frontend
 
-## Getting Started
+A modern, responsive frontend application built with **Next.js** and **Tailwind CSS**, designed to unify diploma students through events, learning opportunities, and community engagement.
 
-First, run the development server:
+This frontend consumes a RESTful backend API and provides role-based dashboards for **students**, **organizers**, and **super admins**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+![Student](./public/screenshots/home-page-screenshot.png)
+
+---
+
+## 🚀 Tech Stack
+
+- **Framework:** Next.js
+- **Styling:** Tailwind CSS, Shadcn UI
+- **Authentication:** JWT (via HTTP-only cookies)
+- **HTTP Client:** Axios
+- **UI Utilities:** SweetAlert2, Sonner (toast)
+- **Icons:** Lucide Icons
+- **Deployment:** Vercel
+
+---
+
+## Key Features
+
+### Student
+
+- Browse and register for events
+- View personal **event timeline**
+- Join online events when date & time match
+- QR-based ticket system
+- Event reviews and ratings
+
+### Organizer
+
+- Create, update, and delete events
+- View all event registrations
+- Manage participant data
+- Review feedback from attendees
+
+### Super Admin
+
+- View all users in a dashboard table
+- Change user roles (student / organizer)
+- Secure role-based access control
+
+---
+
+## Project Structure
+
+```
+└── 📁src
+    └── 📁app
+        └── 📁(auth)
+        └── 📁(main)
+        └── 📁dashboard
+        ├── globals.css
+        ├── layout.jsx
+    └── 📁components
+    └── 📁hooks
+    └── 📁images
+    └── 📁lib
+    └── 📁redux
+    └── 📁services
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📸 Screenshots
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+| Student                                                                       | Organizer                                                                             | Super Admin                                                                  |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| ![Student](./public/screenshots/student-dashboard-my-bookings-screenshot.png) | ![Organizer](./public/screenshots/organizer-dashboard-payment-request-screenshot.png) | ![Super Admin](./public/screenshots/admin-dashboard-all-user-screenshot.png) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Run Locally
 
-To learn more about Next.js, take a look at the following resources:
+Follow these steps to run the frontend on your local machine.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 1. Clone the Repository
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+git clone https://github.com/sajid-islam/Diploma360-Client
+cd Diploma360-Client
+npm install
 
-## Deploy on Vercel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 2. Setup Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_API_BASE_URL=
+```
+
+### 3. Start the Server
+
+```
+npm run dev
+
+```
