@@ -19,9 +19,10 @@ export default function SignInPage() {
 
   const redirect = searchParams.get("redirect") || "/";
 
+  // Normal login
   const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
       const email = e.target.elements.email.value;
       const password = e.target.elements.password.value;
 
@@ -29,9 +30,8 @@ export default function SignInPage() {
       e.target.reset();
       router.push(redirect);
     } catch (error) {
-      console.log();
       if (error.message === "Firebase: Error (auth/invalid-credential).") {
-        toast.error("Incorrect email or password. Please try again.");
+        toast.error("Incorrect email or password");
       } else {
         toast.error("Something went wrong");
       }
@@ -39,17 +39,13 @@ export default function SignInPage() {
     }
   };
 
-  const handleAdminLogin = async (e) => {
+  // Quick login handler
+  const handleQuickLogin = async (email, password) => {
     try {
-      const adminEmail = "admin@gmail.com";
-      const adminPassword = "123456";
-      await login(adminEmail, adminPassword);
-
-      setTimeout(() => {
-        router.push(redirect);
-      }, 100);
+      await login(email, password);
+      router.push(redirect);
     } catch (error) {
-      console.log(error);
+      toast.error("Quick login failed");
       setAuthLoading(false);
     }
   };
@@ -58,6 +54,8 @@ export default function SignInPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold mb-6 text-gray-900">সাইন ইন করুন</h2>
+
+        {/* Email / Password Login */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="email">ইমেইল</Label>
@@ -68,6 +66,7 @@ export default function SignInPage() {
               className="mt-1"
             />
           </div>
+
           <div>
             <Label htmlFor="password">পাসওয়ার্ড</Label>
             <Input
@@ -77,19 +76,42 @@ export default function SignInPage() {
               className="mt-1"
             />
           </div>
-          <div className="flex gap-2 mt-6">
-            <Button disabled={authLoading} type="submit" className="flex-1">
-              {authLoading ? "লগ ইন হচ্ছে" : "লগ ইন"}
-            </Button>
-            <Button
-              disabled={authLoading}
-              onClick={handleAdminLogin}
-              className=""
-            >
-              {authLoading ? "লগ ইন হচ্ছে" : "লগ ইন অ্যাডমিন"}
-            </Button>
-          </div>
+
+          {/* Login Button*/}
+          <Button disabled={authLoading} type="submit" className="w-full mt-4">
+            {authLoading ? "লগ ইন হচ্ছে..." : "লগ ইন"}
+          </Button>
         </form>
+
+        {/* Quick Login Buttons*/}
+        <div className="flex gap-2 mt-4">
+          <Button
+            variant="outline"
+            disabled={authLoading}
+            className="flex-1"
+            onClick={() => handleQuickLogin("admin@gmail.com", "123456")}
+          >
+            Admin
+          </Button>
+
+          <Button
+            variant="outline"
+            disabled={authLoading}
+            className="flex-1"
+            onClick={() => handleQuickLogin("organizer@gmail.com", "123456")}
+          >
+            Organizer
+          </Button>
+
+          <Button
+            variant="outline"
+            disabled={authLoading}
+            className="flex-1"
+            onClick={() => handleQuickLogin("student@gmail.com", "123456")}
+          >
+            Student
+          </Button>
+        </div>
 
         <GoogleAuthBtn />
 
